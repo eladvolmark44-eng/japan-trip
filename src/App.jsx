@@ -528,8 +528,14 @@ export default function JapanTrip() {
   }
 
   async function deleteCheckItem(id) {
+    console.log("deleteCheckItem", id);
     setSyncing(true);
-    await remove(ref(db,`checklist/${id}`));
+    try {
+      await remove(ref(db,`checklist/${id}`));
+      console.log("deleteCheckItem ok", id);
+    } catch(e) {
+      console.error("deleteCheckItem failed", id, e);
+    }
     setSyncing(false);
   }
 
@@ -602,7 +608,13 @@ export default function JapanTrip() {
   }
 
   async function deletePackingItem(id) {
-    await remove(ref(db,`packing/${id}`));
+    console.log("deletePackingItem", id);
+    try {
+      await remove(ref(db,`packing/${id}`));
+      console.log("deletePackingItem ok", id);
+    } catch(e) {
+      console.error("deletePackingItem failed", id, e);
+    }
   }
 
   const done = checklist.filter(i=>i.done).length;
