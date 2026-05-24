@@ -534,7 +534,7 @@ export default function JapanTrip() {
         body: JSON.stringify({ text: aiInput }),
       });
       const data = await res.json();
-      if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      if(!res.ok) throw new Error(data.detail ? `${data.error}: ${data.detail}` : (data.error || `HTTP ${res.status}`));
       const items = data.items;
       if(!Array.isArray(items) || items.length===0) throw new Error("לא הצלחתי לזהות המלצות בטקסט");
       await saveRecs(items);
@@ -767,7 +767,7 @@ export default function JapanTrip() {
               <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"12px",background:aiLoading||!aiInput.trim()?"#f0ede8":"#C1121F",border:"none",borderRadius:12,color:aiLoading||!aiInput.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif",transition:"all .2s" }}>
                 {aiLoading?"⏳ מסדר המלצות...":"✨ סדר והוסף להמלצות"}
               </button>
-              {aiError&&<div style={{ marginTop:10,padding:"9px 12px",background:"#FFF5F5",border:"1px solid #FFCDD2",borderRadius:10,color:"#C1121F",fontSize:12,textAlign:"right" }}>⚠️ {aiError}</div>}
+              {aiError&&<div style={{ marginTop:10,padding:"9px 12px",background:"#FFF5F5",border:"1px solid #FFCDD2",borderRadius:10,color:"#C1121F",fontSize:12,textAlign:"right",wordBreak:"break-word",whiteSpace:"pre-wrap",direction:"ltr" }}>⚠️ {aiError}</div>}
             </div>
 
             {/* Manual add (fallback) */}
