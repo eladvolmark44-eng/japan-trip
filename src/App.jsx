@@ -6,13 +6,10 @@ import { getDatabase, ref, onValue, set, update } from "firebase/database";
 // 🔥 FIREBASE CONFIG – החלף עם הנתונים שלך
 // ════════════════════════════════════════════════
 const firebaseConfig = {
-  apiKey: "AIzaSyCRAFg_hm5vdIQPI9S1Qj_wAdsMIIyzxuc",
-  authDomain: "japan-trip-a530c.firebaseapp.com",
-  databaseURL: "https://japan-trip-a530c-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "japan-trip-a530c",
-  storageBucket: "japan-trip-a530c.firebasestorage.app",
-  messagingSenderId: "277616419193",
-  appId: "1:277616419193:web:eb39d46abc264fb5dd8fa8"
+  apiKey: "REPLACE_API_KEY",
+  authDomain: "REPLACE_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://REPLACE_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId: "REPLACE_PROJECT_ID",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -436,15 +433,15 @@ export default function JapanTrip() {
             {parts.map((part,pi)=>{
               const isOpen = openPart===pi;
               return (
-                <div key={pi} className="part-card fade-up" style={{ animationDelay:`${pi*0.05}s`,background:"rgba(0,0,0,0.58)",backdropFilter:"blur(16px)" }}>
+                <div key={pi} className="part-card fade-up" style={{ animationDelay:`${pi*0.05}s`,background:"rgba(10,8,6,0.7)",backdropFilter:"blur(16px)",borderRight:`3px solid ${part.accent}` }}>
                   <div onClick={()=>setOpenPart(isOpen?null:pi)}
-                    style={{ padding:"15px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:isOpen?"1px solid rgba(255,255,255,0.07)":"none",background:`linear-gradient(90deg,${part.accentDim},transparent)` }}>
+                    style={{ padding:"15px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:isOpen?"1px solid rgba(255,255,255,0.07)":"none" }}>
                     <div>
-                      <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",marginBottom:2,opacity:0.8 }}>{part.dates}</div>
+                      <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",marginBottom:2,opacity:0.9 }}>{part.dates}</div>
                       <div style={{ fontSize:20,fontWeight:900,fontFamily:"'Playfair Display',serif" }}>{part.label}</div>
                       <div style={{ fontSize:12,color:"rgba(255,255,255,0.5)",marginTop:1 }}>{part.sub}</div>
                     </div>
-                    <div style={{ width:30,height:30,borderRadius:"50%",border:`1px solid ${part.accent}66`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:part.accent,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"none",background:part.accentDim,flexShrink:0 }}>▾</div>
+                    <div style={{ width:30,height:30,borderRadius:"50%",border:`1px solid ${part.accent}88`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:part.accent,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"none",flexShrink:0 }}>▾</div>
                   </div>
 
                   {isOpen && (
