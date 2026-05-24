@@ -1,20 +1,20 @@
-const GEMINI_MODEL = "gemini-2.0-flash";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-const MAX_OUTPUT_TOKENS = 800;
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+const MAX_TOKENS = 800;
 const SYSTEM_PROMPT =
   "You are a Japan travel assistant. Parse the user's text and extract recommendations. " +
-  "Return ONLY a valid JSON array, no markdown, no commentary. " +
-  "Categories must be one of: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים. " +
-  'Each item shape: {"cat":"category","title":"name","desc":"short description","loc":"location or empty"}.';
+  "Return ONLY a JSON object of the shape {\"items\": [...]}, no markdown, no commentary. " +
+  "Each item: {\"cat\":\"category\",\"title\":\"name\",\"desc\":\"short description\",\"loc\":\"location or empty\"}. " +
+  "Categories must be one of: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים.";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: "Missing GEMINI_API_KEY env var" });
+    res.status(500).json({ error: "Missing GROQ_API_KEY env var" });
     return;
   }
   const { text } = req.body || {};
@@ -24,49 +24,47 @@ export default async function handler(req, res) {
   }
 
   try {
-    const upstream = await fetch(`${GEMINI_URL}?key=${encodeURIComponent(apiKey)}`, {
+    const upstream = await fetch(GROQ_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [
+        model: GROQ_MODEL,
+        max_tokens: MAX_TOKENS,
+        temperature: 0.2,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
           {
             role: "user",
-            parts: [
-              {
-                text:
-                  `Parse this into a JSON array of recommendations for a Japan trip:\n\n${text}`,
-              },
-            ],
+            content: `Parse this into recommendations for a Japan trip:\n\n${text}`,
           },
         ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          maxOutputTokens: MAX_OUTPUT_TOKENS,
-          temperature: 0.2,
-        },
       }),
     });
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(upstream.status).json({ error: "Gemini API error", detail });
+      res.status(upstream.status).json({ error: "Groq API error", detail });
       return;
     }
 
     const data = await upstream.json();
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    const cleaned = raw.replace(/```json|```/g, "").trim();
+    const raw = data.choices?.[0]?.message?.content || "";
 
-    let items;
+    let parsed;
     try {
-      items = JSON.parse(cleaned);
+      parsed = JSON.parse(raw);
     } catch (parseErr) {
       res.status(502).json({ error: "Model returned non-JSON output", raw });
       return;
     }
+
+    const items = Array.isArray(parsed) ? parsed : parsed.items;
     if (!Array.isArray(items)) {
-      res.status(502).json({ error: "Model output is not an array", raw });
+      res.status(502).json({ error: "Model output has no items array", raw });
       return;
     }
 
