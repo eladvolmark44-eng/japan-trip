@@ -88,6 +88,31 @@ const DEFAULT_CHECKLIST = [
   { id:"c12", cat:"🧳 לוגיסטיקה", text:"מסעדות מיוחדות – הזמנה חודשים מראש", urgent:false, done:false },
 ];
 
+const DEFAULT_PACKING = [
+  { id:"p1", cat:"📄 מסמכים", text:"דרכונים תקפים לכל המשפחה", done:false },
+  { id:"p2", cat:"📄 מסמכים", text:"ביטוח נסיעות – הדפסה ודיגיטל", done:false },
+  { id:"p3", cat:"📄 מסמכים", text:"אישורי מלון – כולם הודפסו", done:false },
+  { id:"p4", cat:"📄 מסמכים", text:"כרטיסי טיסה", done:false },
+  { id:"p5", cat:"📄 מסמכים", text:"JR Pass – להוציא לפני היציאה", done:false },
+  { id:"p6", cat:"💴 כסף", text:"מזומן ין יפני (JPY) – ¥50,000 לפחות", done:false },
+  { id:"p7", cat:"💴 כסף", text:"כרטיס אשראי ללא עמלת מט\"ח", done:false },
+  { id:"p8", cat:"💴 כסף", text:"IC Card (Suica) – ניתן לטעון בנריטה", done:false },
+  { id:"p9", cat:"📱 טכנולוגיה", text:"מתאם חשמל יפני (Type A – זהה לישראל, לא צריך)", done:false },
+  { id:"p10", cat:"📱 טכנולוגיה", text:"SIM יפני או eSIM לרוחב פס", done:false },
+  { id:"p11", cat:"📱 טכנולוגיה", text:"בנק סוללה (Portable Charger)", done:false },
+  { id:"p12", cat:"📱 טכנולוגיה", text:"מצלמה / GoPro", done:false },
+  { id:"p13", cat:"👕 ביגוד", text:"נעליים נוחות להליכה ארוכה", done:false },
+  { id:"p14", cat:"👕 ביגוד", text:"בגדים קלים – ספטמבר חם ולח ביפן", done:false },
+  { id:"p15", cat:"👕 ביגוד", text:"מעיל קל / סוודר לערבות", done:false },
+  { id:"p16", cat:"👕 ביגוד", text:"גרביים – יורדים לנעליים בהרבה מקדשים", done:false },
+  { id:"p17", cat:"🧴 בריאות", text:"תרופות אישיות", done:false },
+  { id:"p18", cat:"🧴 בריאות", text:"קרם הגנה SPF50+", done:false },
+  { id:"p19", cat:"🧴 בריאות", text:"מטריה קטנה / כובע – שמש וגשם", done:false },
+  { id:"p20", cat:"🎒 שונות", text:"תרמיל יומי קטן לטיולים", done:false },
+  { id:"p21", cat:"🎒 שונות", text:"שקיות ניילון קטנות – ליפן אין פחים בחוץ", done:false },
+  { id:"p22", cat:"🎒 שונות", text:"מדבקות שם על המזוודות", done:false },
+];
+
 const ATTRACTIONS = [
   { name:"DisneySea", loc:"טוקיו", emoji:"🎡", day:"09.09", tags:["ילדים","חובה"], color:"#C1121F",
     mapsUrl:"https://www.google.com/maps/search/Tokyo+DisneySea/@35.6267,139.8851,16z",
@@ -420,18 +445,24 @@ export default function JapanTrip() {
   const [parts, setParts] = useState(DEFAULT_PARTS);
   const [checklist, setChecklist] = useState(DEFAULT_CHECKLIST);
   const [notes, setNotes] = useState({});
+  const [recs, setRecs] = useState({});
+  const [packing, setPacking] = useState({});
   const [editDay, setEditDay] = useState(null);
   const [editCheck, setEditCheck] = useState(null);
   const [addNote, setAddNote] = useState(null);
   const [selectedAttr, setSelectedAttr] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(()=>{
     const u1 = onValue(ref(db,"parts"), s=>{ if(s.exists()) setParts(s.val()); });
     const u2 = onValue(ref(db,"checklist"), s=>{ if(s.exists()) setChecklist(Object.values(s.val())); });
     const u3 = onValue(ref(db,"notes"), s=>{ if(s.exists()) setNotes(s.val()); });
-    return ()=>{ u1(); u2(); u3(); };
+    const u4 = onValue(ref(db,"recs"), s=>{ if(s.exists()) setRecs(s.val()); });
+    const u5 = onValue(ref(db,"packing"), s=>{ if(s.exists()) setPacking(s.val()); });
+    return ()=>{ u1(); u2(); u3(); u4(); u5(); };
   },[]);
 
   useEffect(()=>{
@@ -440,6 +471,8 @@ export default function JapanTrip() {
         set(ref(db,"parts"), DEFAULT_PARTS);
         set(ref(db,"checklist"), Object.fromEntries(DEFAULT_CHECKLIST.map(i=>[i.id,i])));
         set(ref(db,"notes"), {});
+        set(ref(db,"recs"), {});
+        set(ref(db,"packing"), Object.fromEntries(DEFAULT_PACKING.map(i=>[i.id,i])));
         set(ref(db,"initialized"), true);
       }
     },{ onlyOnce:true });
@@ -488,6 +521,64 @@ export default function JapanTrip() {
     setSyncing(false);
   }
 
+  async function parseAndAddRec() {
+    if(!aiInput.trim()) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-20250514", max_tokens:800,
+          system:"You are a Japan travel assistant. Parse the user's text and extract recommendations. Return ONLY valid JSON, no markdown. Categories: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים",
+          messages:[{ role:"user", content:`Parse this into recommendations for a Japan trip. Return JSON array: [{"cat":"category","title":"name","desc":"short description","loc":"location or empty"}]\n\n${aiInput}` }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text||"";
+      const clean = text.replace(/```json|```/g,"").trim();
+      const items = JSON.parse(clean);
+      setSyncing(true);
+      const updates = {};
+      items.forEach(item => {
+        const id = `r${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+        updates[id] = { id, ...item, done:false };
+      });
+      await update(ref(db,"recs"), updates);
+      setSyncing(false);
+      setAiInput("");
+    } catch(e) { console.error(e); }
+    setAiLoading(false);
+  }
+
+  async function toggleRec(id) {
+    const item = Object.values(recs).find(r=>r.id===id);
+    if(!item) return;
+    await update(ref(db,`recs/${id}`), { done: !item.done });
+  }
+
+  async function deleteRec(id) {
+    if(!window.confirm("למחוק המלצה זו?")) return;
+    await remove(ref(db,`recs/${id}`));
+  }
+
+  async function togglePacking(id) {
+    const item = Object.values(packing).find(p=>p.id===id);
+    if(!item) return;
+    await update(ref(db,`packing/${id}`), { done: !item.done });
+  }
+
+  async function addPackingItem() {
+    const id = `p${Date.now()}`;
+    const item = { id, cat:"🧳 כללי", text:"פריט חדש", done:false };
+    await set(ref(db,`packing/${id}`), item);
+  }
+
+  async function deletePackingItem(id) {
+    if(!window.confirm("למחוק פריט זה?")) return;
+    await remove(ref(db,`packing/${id}`));
+  }
+
   const done = checklist.filter(i=>i.done).length;
   const cats = [...new Set(checklist.map(i=>i.cat))];
 
@@ -534,14 +625,14 @@ export default function JapanTrip() {
       </div>
 
       {/* TABS */}
-      <div style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.96)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ede9e4",padding:"10px 16px",display:"flex",justifyContent:"center",alignItems:"center",gap:8 }}>
-        {[{id:"itinerary",label:"📅 לוז"},{id:"checklist",label:`✅ משימות ${done}/${checklist.length}`}].map(t=>(
-          <button key={t.id} className="tab-btn" onClick={()=>setTab(t.id)} style={{ background:tab===t.id?"#C1121F":"#F5F5F3", color:tab===t.id?"#fff":"#666", fontWeight:tab===t.id?700:500 }}>{t.label}</button>
+      <div style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.96)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ede9e4",padding:"10px 16px",display:"flex",alignItems:"center",gap:6,overflowX:"auto" }}>
+        {[{id:"itinerary",label:"📅 לוז"},{id:"checklist",label:`✅ ${done}/${checklist.length}`},{id:"recs",label:"⭐ המלצות"},{id:"packing",label:"🎒 מה להביא"}].map(t=>(
+          <button key={t.id} className="tab-btn" onClick={()=>setTab(t.id)} style={{ background:tab===t.id?"#C1121F":"#F5F5F3", color:tab===t.id?"#fff":"#666", fontWeight:tab===t.id?700:500, flexShrink:0 }}>{t.label}</button>
         ))}
-        <button onClick={()=>setEditMode(!editMode)} style={{ padding:"8px 14px",border:`1.5px solid ${editMode?"#C1121F":"#e0ddd8"}`,background:editMode?"#FFF5F5":"transparent",color:editMode?"#C1121F":"#888",borderRadius:100,fontSize:13,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,transition:"all .2s" }}>
-          {editMode?"✓ סיום עריכה":"✏️ עריכה"}
+        <button onClick={()=>setEditMode(!editMode)} style={{ padding:"8px 14px",border:`1.5px solid ${editMode?"#C1121F":"#e0ddd8"}`,background:editMode?"#FFF5F5":"transparent",color:editMode?"#C1121F":"#888",borderRadius:100,fontSize:13,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,transition:"all .2s",flexShrink:0 }}>
+          {editMode?"✓ סיום":"✏️"}
         </button>
-        {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite" }}>שומר…</span>}
+        {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite",flexShrink:0 }}>שומר…</span>}
       </div>
 
       <div style={{ maxWidth:760,margin:"0 auto",padding:"22px 14px 80px" }}>
@@ -637,7 +728,89 @@ export default function JapanTrip() {
                 + הוסף משימה חדשה
               </button>
             )}
-            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
+        {/* RECOMMENDATIONS */}
+        {tab==="recs"&&(
+          <div className="fade-up">
+            {/* AI Input */}
+            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
+              <div style={{ fontWeight:700,fontSize:16,marginBottom:4 }}>✨ הוסף המלצות בטקסט חופשי</div>
+              <div style={{ fontSize:12,color:"#aaa",marginBottom:12 }}>הדבק המלצה, טקסט מאינסטגרם, בלוג, או כל מקור – ה-AI יסדר אוטומטית</div>
+              <textarea
+                value={aiInput} onChange={e=>setAiInput(e.target.value)}
+                placeholder={`לדוגמה:\n"חייבים לאכול ב-Ichiran Ramen באוסקה, ראמן סולו מדהים. גם Takoyaki בדוטונבורי חובה. לקנות Kit Kat matcha בלאוסון."`}
+                rows={4} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"10px 12px",fontSize:13,color:"#333",outline:"none",resize:"vertical",fontFamily:"'Heebo',sans-serif",textAlign:"right",lineHeight:1.6,marginBottom:10 }}
+              />
+              <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"12px",background:aiLoading||!aiInput.trim()?"#f0ede8":"#C1121F",border:"none",borderRadius:12,color:aiLoading||!aiInput.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif",transition:"all .2s" }}>
+                {aiLoading?"⏳ מסדר המלצות...":"✨ סדר והוסף להמלצות"}
+              </button>
+            </div>
+
+            {/* Recs by category */}
+            {Object.keys(recs).length===0 ? (
+              <div style={{ textAlign:"center",color:"#ccc",padding:"40px 0",fontSize:14 }}>עדיין אין המלצות – הוסף מלמעלה!</div>
+            ) : (
+              [...new Set(Object.values(recs).map(r=>r.cat))].map(cat=>(
+                <div key={cat} style={{ marginBottom:16 }}>
+                  <div style={{ fontSize:12,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
+                  <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                    {Object.values(recs).filter(r=>r.cat===cat).map(rec=>(
+                      <div key={rec.id} style={{ display:"flex",alignItems:"flex-start",gap:12,padding:"13px 16px",borderBottom:"1px solid #f0ede8",cursor:"pointer",transition:"background .15s" }}
+                        className="check-row" onClick={()=>toggleRec(rec.id)}>
+                        <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${rec.done?"#386641":"#ddd"}`,background:rec.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",marginTop:1 }}>
+                          {rec.done&&"✓"}
+                        </div>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontWeight:700,fontSize:14,color:rec.done?"#bbb":"#1a1a1a",textDecoration:rec.done?"line-through":"none" }}>{rec.title}</div>
+                          {rec.desc&&<div style={{ fontSize:12,color:"#888",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
+                          {rec.loc&&<div style={{ fontSize:11,color:"#C1121F",marginTop:2 }}>📍 {rec.loc}</div>}
+                        </div>
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5",flexShrink:0 }} onClick={e=>{e.stopPropagation();deleteRec(rec.id);}}>🗑️</button>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ ההמלצות משותפות לכל המשפחה</div>
+          </div>
+        )}
+
+        {/* PACKING LIST */}
+        {tab==="packing"&&(
+          <div className="fade-up">
+            {/* Progress */}
+            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
+              <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
+                <span style={{ fontWeight:700,fontSize:16 }}>🎒 מה להביא ליפן</span>
+                <span style={{ fontSize:13,color:"#386641",fontWeight:700 }}>{Object.values(packing).filter(p=>p.done).length}/{Object.values(packing).length}</span>
+              </div>
+              <div style={{ height:5,background:"#f0ede8",borderRadius:5,overflow:"hidden" }}>
+                <div style={{ height:"100%",width:`${Object.values(packing).length?Object.values(packing).filter(p=>p.done).length/Object.values(packing).length*100:0}%`,background:"linear-gradient(90deg,#386641,#52B788)",borderRadius:5,transition:"width 0.5s" }}/>
+              </div>
+            </div>
+
+            {[...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
+              <div key={cat} style={{ marginBottom:16 }}>
+                <div style={{ fontSize:11,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
+                <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                  {Object.values(packing).filter(p=>p.cat===cat).map(item=>(
+                    <div key={item.id} className="check-row" onClick={()=>togglePacking(item.id)}>
+                      <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${item.done?"#386641":"#ddd"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                        {item.done&&"✓"}
+                      </div>
+                      <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
+                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{e.stopPropagation();deletePackingItem(item.id);}}>🗑️</button>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {editMode&&(
+              <button onClick={addPackingItem} style={{ width:"100%",padding:"13px",background:"#F0F7F0",border:"2px dashed #B7DFC0",borderRadius:14,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,marginTop:8 }}>
+                + הוסף פריט
+              </button>
+            )}
+            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הרשימה משותפת לכל המשפחה</div>
           </div>
         )}
       </div>
