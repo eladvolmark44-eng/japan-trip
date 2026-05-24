@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set, update } from "firebase/database";
+import { getDatabase, ref, onValue, set, update, remove } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRAFg_hm5vdIQPI9S1Qj_wAdsMIIyzxuc",
@@ -348,6 +348,13 @@ export default function JapanTrip() {
     setEditCheck(item);
   }
 
+  async function deleteCheckItem(id) {
+    if(!window.confirm("Delete this task?")) return;
+    setSyncing(true);
+    await remove(ref(db,`checklist/${id}`));
+    setSyncing(false);
+  }
+
   const done = checklist.filter(i=>i.done).length;
   const cats = [...new Set(checklist.map(i=>i.cat))];
 
@@ -485,6 +492,7 @@ export default function JapanTrip() {
                       <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
                       {item.urgent&&!item.done&&<span className="urgent">דחוף</span>}
                       {editMode&&<button className="edit-btn" onClick={()=>setEditCheck(item)}>✏️</button>}
+                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={(e)=>{e.stopPropagation();deleteCheckItem(item.id);}}>🗑️</button>}
                     </div>
                   ))}
                 </div>
