@@ -478,22 +478,6 @@ export default function JapanTrip() {
     return ()=>{ u1(); u2(); u3(); u4(); u5(); };
   },[]);
 
-  // One-time cleanup: remove any orphaned entries without an id field
-  useEffect(()=>{
-    ["packing","checklist","recs"].forEach(path=>{
-      onValue(ref(db,path), snap=>{
-        if(!snap.exists()) return;
-        const dict = snap.val();
-        Object.entries(dict).forEach(([key,value])=>{
-          if(!value || typeof value!=="object" || !value.id){
-            console.log(`cleanup: removing ${path}/${key}`, value);
-            remove(ref(db,`${path}/${key}`));
-          }
-        });
-      },{ onlyOnce:true });
-    });
-  },[]);
-
   useEffect(()=>{
     onValue(ref(db,"initialized"), s=>{
       if(!s.exists()){
