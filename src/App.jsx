@@ -625,7 +625,8 @@ export default function JapanTrip() {
       </div>
 
       {/* TABS */}
-      <div style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.96)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ede9e4",padding:"10px 16px",display:"flex",alignItems:"center",gap:6,overflowX:"auto" }}>
+      <div style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.96)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ede9e4",padding:"10px 16px",overflowX:"auto" }}>
+        <div style={{ display:"flex",alignItems:"center",gap:6,justifyContent:"center",minWidth:"max-content",margin:"0 auto" }}>
         {[{id:"itinerary",label:"📅 לוז"},{id:"checklist",label:`✅ ${done}/${checklist.length}`},{id:"recs",label:"⭐ המלצות"},{id:"packing",label:"🎒 מה להביא"}].map(t=>(
           <button key={t.id} className="tab-btn" onClick={()=>setTab(t.id)} style={{ background:tab===t.id?"#C1121F":"#F5F5F3", color:tab===t.id?"#fff":"#666", fontWeight:tab===t.id?700:500, flexShrink:0 }}>{t.label}</button>
         ))}
@@ -633,6 +634,7 @@ export default function JapanTrip() {
           {editMode?"✓ סיום":"✏️"}
         </button>
         {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite",flexShrink:0 }}>שומר…</span>}
+        </div>
       </div>
 
       <div style={{ maxWidth:760,margin:"0 auto",padding:"22px 14px 80px" }}>
@@ -793,27 +795,29 @@ export default function JapanTrip() {
               </div>
             </div>
 
-            {[...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
-              <div key={cat} style={{ marginBottom:16 }}>
-                <div style={{ fontSize:11,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
-                <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
-                  {Object.values(packing).filter(p=>p.cat===cat).map(item=>(
-                    <div key={item.id} className="check-row" onClick={()=>togglePacking(item.id)}>
-                      <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${item.done?"#386641":"#ddd"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
-                        {item.done&&"✓"}
+            {Object.values(packing).length===0 ? (
+              <div style={{ textAlign:"center",color:"#ccc",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
+            ) : (
+              [...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
+                <div key={cat} style={{ marginBottom:16 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
+                  <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                    {Object.values(packing).filter(p=>p.cat===cat).map(item=>(
+                      <div key={item.id} className="check-row" onClick={()=>togglePacking(item.id)}>
+                        <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${item.done?"#386641":"#ddd"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                          {item.done&&"✓"}
+                        </div>
+                        <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{e.stopPropagation();deletePackingItem(item.id);}}>🗑️</button>}
                       </div>
-                      <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
-                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{e.stopPropagation();deletePackingItem(item.id);}}>🗑️</button>}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {editMode&&(
-              <button onClick={addPackingItem} style={{ width:"100%",padding:"13px",background:"#F0F7F0",border:"2px dashed #B7DFC0",borderRadius:14,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,marginTop:8 }}>
-                + הוסף פריט
-              </button>
+              ))
             )}
+            <button onClick={addPackingItem} style={{ width:"100%",padding:"13px",background:"#F0F7F0",border:"2px dashed #B7DFC0",borderRadius:14,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,marginTop:8 }}>
+              + הוסף פריט
+            </button>
             <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הרשימה משותפת לכל המשפחה</div>
           </div>
         )}
