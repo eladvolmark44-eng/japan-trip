@@ -455,6 +455,8 @@ export default function JapanTrip() {
   const [syncing, setSyncing] = useState(false);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+  const [manualRec, setManualRec] = useState({ cat:"אטרקציות", title:"", desc:"", loc:"" });
 
   useEffect(()=>{
     const u1 = onValue(ref(db,"parts"), s=>{ if(s.exists()) setParts(s.val()); });
@@ -524,31 +526,47 @@ export default function JapanTrip() {
   async function parseAndAddRec() {
     if(!aiInput.trim()) return;
     setAiLoading(true);
+    setAiError("");
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/parse-recs", {
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:800,
-          system:"You are a Japan travel assistant. Parse the user's text and extract recommendations. Return ONLY valid JSON, no markdown. Categories: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים",
-          messages:[{ role:"user", content:`Parse this into recommendations for a Japan trip. Return JSON array: [{"cat":"category","title":"name","desc":"short description","loc":"location or empty"}]\n\n${aiInput}` }]
-        })
+        body: JSON.stringify({ text: aiInput }),
       });
       const data = await res.json();
-      const text = data.content?.[0]?.text||"";
-      const clean = text.replace(/```json|```/g,"").trim();
-      const items = JSON.parse(clean);
-      setSyncing(true);
-      const updates = {};
-      items.forEach(item => {
-        const id = `r${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
-        updates[id] = { id, ...item, done:false };
-      });
-      await update(ref(db,"recs"), updates);
-      setSyncing(false);
+      if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      const items = data.items;
+      if(!Array.isArray(items) || items.length===0) throw new Error("לא הצלחתי לזהות המלצות בטקסט");
+      await saveRecs(items);
       setAiInput("");
-    } catch(e) { console.error(e); }
+    } catch(e) {
+      console.error(e);
+      setAiError(e.message || "שגיאה בעיבוד הטקסט");
+    }
     setAiLoading(false);
+  }
+
+  async function saveRecs(items) {
+    setSyncing(true);
+    const updates = {};
+    items.forEach(item => {
+      const id = `r${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
+      updates[id] = { id, ...item, done:false };
+    });
+    await update(ref(db,"recs"), updates);
+    setSyncing(false);
+  }
+
+  async function addManualRec() {
+    const title = manualRec.title.trim();
+    if(!title) return;
+    await saveRecs([{
+      cat: manualRec.cat,
+      title,
+      desc: manualRec.desc.trim(),
+      loc: manualRec.loc.trim(),
+    }]);
+    setManualRec({ cat:"אטרקציות", title:"", desc:"", loc:"" });
   }
 
   async function toggleRec(id) {
@@ -748,6 +766,26 @@ export default function JapanTrip() {
               />
               <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"12px",background:aiLoading||!aiInput.trim()?"#f0ede8":"#C1121F",border:"none",borderRadius:12,color:aiLoading||!aiInput.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif",transition:"all .2s" }}>
                 {aiLoading?"⏳ מסדר המלצות...":"✨ סדר והוסף להמלצות"}
+              </button>
+              {aiError&&<div style={{ marginTop:10,padding:"9px 12px",background:"#FFF5F5",border:"1px solid #FFCDD2",borderRadius:10,color:"#C1121F",fontSize:12,textAlign:"right" }}>⚠️ {aiError}</div>}
+            </div>
+
+            {/* Manual add (fallback) */}
+            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
+              <div style={{ fontWeight:700,fontSize:16,marginBottom:4 }}>✍️ הוסף המלצה ידנית</div>
+              <div style={{ fontSize:12,color:"#aaa",marginBottom:12 }}>אם ה-AI לא זמין – הוסף ישירות</div>
+              <select value={manualRec.cat} onChange={e=>setManualRec({...manualRec,cat:e.target.value})} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",fontFamily:"'Heebo',sans-serif" }}>
+                <option>אטרקציות</option>
+                <option>מסעדות</option>
+                <option>קניות</option>
+                <option>לינה</option>
+                <option>טיפים כלליים</option>
+              </select>
+              <input value={manualRec.title} onChange={e=>setManualRec({...manualRec,title:e.target.value})} placeholder="שם / כותרת" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
+              <input value={manualRec.desc} onChange={e=>setManualRec({...manualRec,desc:e.target.value})} placeholder="תיאור קצר (אופציונלי)" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
+              <input value={manualRec.loc} onChange={e=>setManualRec({...manualRec,loc:e.target.value})} placeholder="מיקום (אופציונלי)" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:10,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
+              <button onClick={addManualRec} disabled={!manualRec.title.trim()} style={{ width:"100%",padding:"12px",background:!manualRec.title.trim()?"#f0ede8":"#386641",border:"none",borderRadius:12,color:!manualRec.title.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:!manualRec.title.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif" }}>
+                + הוסף המלצה
               </button>
             </div>
 
