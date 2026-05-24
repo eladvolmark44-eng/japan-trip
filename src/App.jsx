@@ -728,6 +728,10 @@ export default function JapanTrip() {
                 + הוסף משימה חדשה
               </button>
             )}
+            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
+          </div>
+        )}
+
         {/* RECOMMENDATIONS */}
         {tab==="recs"&&(
           <div className="fade-up">
