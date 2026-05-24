@@ -6,10 +6,13 @@ import { getDatabase, ref, onValue, set, update } from "firebase/database";
 // 🔥 FIREBASE CONFIG – החלף עם הנתונים שלך
 // ════════════════════════════════════════════════
 const firebaseConfig = {
-  apiKey: "REPLACE_API_KEY",
-  authDomain: "REPLACE_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://REPLACE_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "REPLACE_PROJECT_ID",
+  apiKey: "AIzaSyCRAFg_hm5vdIQPI9S1Qj_wAdsMIIyzxuc",
+  authDomain: "japan-trip-a530c.firebaseapp.com",
+  databaseURL: "https://japan-trip-a530c-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "japan-trip-a530c",
+  storageBucket: "japan-trip-a530c.firebasestorage.app",
+  messagingSenderId: "277616419193",
+  appId: "1:277616419193:web:eb39d46abc264fb5dd8fa8"
 };
 
 const app = initializeApp(firebaseConfig);
