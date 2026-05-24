@@ -457,13 +457,24 @@ export default function JapanTrip() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
   const [manualRec, setManualRec] = useState({ cat:"אטרקציות", title:"", desc:"", loc:"" });
+  const [confirmDlg, setConfirmDlg] = useState(null);
+
+  function askConfirm(e, message, onConfirm) {
+    e.stopPropagation();
+    const POPUP_W = 220;
+    const POPUP_H = 110;
+    const PAD = 8;
+    const x = Math.min(Math.max(e.clientX - POPUP_W/2, PAD), window.innerWidth - POPUP_W - PAD);
+    const y = Math.min(e.clientY + 12, window.innerHeight - POPUP_H - PAD);
+    setConfirmDlg({ x, y, message, onConfirm });
+  }
 
   useEffect(()=>{
-    const u1 = onValue(ref(db,"parts"), s=>{ if(s.exists()) setParts(s.val()); });
-    const u2 = onValue(ref(db,"checklist"), s=>{ if(s.exists()) setChecklist(Object.values(s.val())); });
-    const u3 = onValue(ref(db,"notes"), s=>{ if(s.exists()) setNotes(s.val()); });
-    const u4 = onValue(ref(db,"recs"), s=>{ if(s.exists()) setRecs(s.val()); });
-    const u5 = onValue(ref(db,"packing"), s=>{ if(s.exists()) setPacking(s.val()); });
+    const u1 = onValue(ref(db,"parts"), s=>{ setParts(s.exists()?s.val():DEFAULT_PARTS); });
+    const u2 = onValue(ref(db,"checklist"), s=>{ setChecklist(s.exists()?Object.values(s.val()):[]); });
+    const u3 = onValue(ref(db,"notes"), s=>{ setNotes(s.exists()?s.val():{}); });
+    const u4 = onValue(ref(db,"recs"), s=>{ setRecs(s.exists()?s.val():{}); });
+    const u5 = onValue(ref(db,"packing"), s=>{ setPacking(s.exists()?s.val():{}); });
     return ()=>{ u1(); u2(); u3(); u4(); u5(); };
   },[]);
 
@@ -517,7 +528,6 @@ export default function JapanTrip() {
   }
 
   async function deleteCheckItem(id) {
-    if(!window.confirm("Delete this task?")) return;
     setSyncing(true);
     await remove(ref(db,`checklist/${id}`));
     setSyncing(false);
@@ -576,7 +586,6 @@ export default function JapanTrip() {
   }
 
   async function deleteRec(id) {
-    if(!window.confirm("למחוק המלצה זו?")) return;
     await remove(ref(db,`recs/${id}`));
   }
 
@@ -593,7 +602,6 @@ export default function JapanTrip() {
   }
 
   async function deletePackingItem(id) {
-    if(!window.confirm("למחוק פריט זה?")) return;
     await remove(ref(db,`packing/${id}`));
   }
 
@@ -737,7 +745,7 @@ export default function JapanTrip() {
                       <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
                       {item.urgent&&!item.done&&<span className="urgent">דחוף</span>}
                       {editMode&&<button className="edit-btn" onClick={()=>setEditCheck(item)}>✏️</button>}
-                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={(e)=>{e.stopPropagation();deleteCheckItem(item.id);}}>🗑️</button>}
+                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={(e)=>askConfirm(e,"למחוק משימה זו?",()=>deleteCheckItem(item.id))}>🗑️</button>}
                     </div>
                   ))}
                 </div>
@@ -808,7 +816,7 @@ export default function JapanTrip() {
                           {rec.desc&&<div style={{ fontSize:12,color:"#888",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
                           {rec.loc&&<div style={{ fontSize:11,color:"#C1121F",marginTop:2 }}>📍 {rec.loc}</div>}
                         </div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5",flexShrink:0 }} onClick={e=>{e.stopPropagation();deleteRec(rec.id);}}>🗑️</button>}
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5",flexShrink:0 }} onClick={e=>askConfirm(e,"למחוק המלצה זו?",()=>deleteRec(rec.id))}>🗑️</button>}
                       </div>
                     ))}
                   </div>
@@ -846,7 +854,7 @@ export default function JapanTrip() {
                           {item.done&&"✓"}
                         </div>
                         <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{e.stopPropagation();deletePackingItem(item.id);}}>🗑️</button>}
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id))}>🗑️</button>}
                       </div>
                     ))}
                   </div>
@@ -865,6 +873,17 @@ export default function JapanTrip() {
       {editDay&&<EditDayModal {...editDay} onSave={(d)=>saveDay(editDay.partId,editDay.dayIdx,d)} onClose={()=>setEditDay(null)}/>}
       {editCheck&&<EditCheckModal item={editCheck} onSave={saveCheckItem} onClose={()=>setEditCheck(null)}/>}
       {addNote&&<AddNoteModal {...addNote} onSave={(t)=>saveNote(addNote.partId,addNote.dayIdx,t)} onClose={()=>setAddNote(null)}/>}
+      {confirmDlg&&(
+        <div onClick={()=>setConfirmDlg(null)} style={{ position:"fixed",inset:0,zIndex:3000 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"#fff",border:"1px solid #ede9e4",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.18)",fontFamily:"'Heebo',sans-serif" }}>
+            <div style={{ fontSize:13,color:"#1a1a1a",marginBottom:10,textAlign:"right" }}>{confirmDlg.message}</div>
+            <div style={{ display:"flex",gap:8 }}>
+              <button onClick={()=>{ confirmDlg.onConfirm(); setConfirmDlg(null); }} style={{ flex:1,padding:"7px",background:"#C1121F",border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>מחק</button>
+              <button onClick={()=>setConfirmDlg(null)} style={{ flex:1,padding:"7px",background:"#f5f5f3",border:"1px solid #e0ddd8",borderRadius:8,color:"#666",fontSize:12,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>ביטול</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
