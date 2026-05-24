@@ -866,7 +866,7 @@ export default function JapanTrip() {
                           {item.done&&"✓"}
                         </div>
                         <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id))}>🗑️</button>}
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{console.log("trash click item:",item);askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>}
                       </div>
                     ))}
                   </div>
