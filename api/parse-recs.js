@@ -1,18 +1,20 @@
-const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-sonnet-4-6";
-const MAX_TOKENS = 800;
+const GEMINI_MODEL = "gemini-2.0-flash";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const MAX_OUTPUT_TOKENS = 800;
 const SYSTEM_PROMPT =
   "You are a Japan travel assistant. Parse the user's text and extract recommendations. " +
-  "Return ONLY valid JSON, no markdown. Categories: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים";
+  "Return ONLY a valid JSON array, no markdown, no commentary. " +
+  "Categories must be one of: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים. " +
+  'Each item shape: {"cat":"category","title":"name","desc":"short description","loc":"location or empty"}.';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: "Missing ANTHROPIC_API_KEY env var" });
+    res.status(500).json({ error: "Missing GEMINI_API_KEY env var" });
     return;
   }
   const { text } = req.body || {};
@@ -22,36 +24,38 @@ export default async function handler(req, res) {
   }
 
   try {
-    const upstream = await fetch(ANTHROPIC_URL, {
+    const upstream = await fetch(`${GEMINI_URL}?key=${encodeURIComponent(apiKey)}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
-        messages: [
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [
           {
             role: "user",
-            content:
-              `Parse this into recommendations for a Japan trip. Return JSON array: ` +
-              `[{"cat":"category","title":"name","desc":"short description","loc":"location or empty"}]\n\n${text}`,
+            parts: [
+              {
+                text:
+                  `Parse this into a JSON array of recommendations for a Japan trip:\n\n${text}`,
+              },
+            ],
           },
         ],
+        generationConfig: {
+          responseMimeType: "application/json",
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
+          temperature: 0.2,
+        },
       }),
     });
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(upstream.status).json({ error: "Anthropic API error", detail });
+      res.status(upstream.status).json({ error: "Gemini API error", detail });
       return;
     }
 
     const data = await upstream.json();
-    const raw = data.content?.[0]?.text || "";
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
     const cleaned = raw.replace(/```json|```/g, "").trim();
 
     let items;
