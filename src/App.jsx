@@ -624,278 +624,326 @@ export default function JapanTrip() {
   const done = checklist.filter(i=>i.done).length;
   const cats = [...new Set(checklist.map(i=>i.cat))];
 
+  const CITY_EMOJIS = ["🗼","🗻","⛩️","🎢","✈️"];
+
   return (
-    <div dir="rtl" style={{ minHeight:"100vh", background:"#FAFAF8", fontFamily:"'Heebo',sans-serif", color:"#1a1a1a" }}>
+    <div dir="rtl" style={{ minHeight:"100vh", background:"#fff", fontFamily:`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Heebo", sans-serif`, color:"#1d1d1f" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&family=Playfair+Display:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
         @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-        .fade-up{animation:fadeUp 0.5s ease both}
-        .part-card{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.07);border:1px solid #ede9e4;transition:transform .2s,box-shadow .2s;cursor:pointer}
-        .part-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.11)}
-        .day-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0ede8;align-items:flex-start;transition:background .15s,padding-right .15s}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .fade-up{animation:fadeUp .4s ease both}
+        .nav-tab{padding:6px 13px;border:none;cursor:pointer;border-radius:8px;font-size:14px;font-weight:500;transition:all .15s;background:transparent;color:#6e6e73;font-family:inherit}
+        .nav-tab:hover{background:#f5f5f7;color:#1d1d1f}
+        .nav-tab.active{background:#f5f5f7;color:#1d1d1f;font-weight:600}
+        .city-card{background:#f5f5f7;border:1px solid #d2d2d7;border-radius:16px;padding:20px;cursor:pointer;transition:all .2s}
+        .city-card:hover{border-color:#86868b;box-shadow:0 4px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
+        .city-card.active{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.1)}
+        .day-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f7;align-items:flex-start;transition:background .15s,padding-right .15s}
         .day-row:last-child{border-bottom:none}
-        .day-row:hover{background:#fdfaf8;padding-right:4px;border-radius:8px}
-        .check-row{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid #f0ede8;transition:background .15s}
-        .check-row:hover{background:#fdf9f5}
+        .day-row:hover{background:#fafafa;padding-right:4px;border-radius:8px}
+        .check-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #f5f5f7;transition:background .15s}
+        .check-row:hover{background:#fafafa}
         .check-row:last-child{border-bottom:none}
-        .tab-btn{padding:9px 20px;border:none;cursor:pointer;border-radius:100px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;transition:all .2s}
-        .gold-text{background:linear-gradient(135deg,#C8860A,#E8A020,#C8860A);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
-        .urgent{background:#FFF0F0;color:#C1121F;border:1px solid #FFCDD2;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-        .edit-btn{background:#f5f5f3;border:1px solid #e0ddd8;color:#888;padding:3px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Heebo',sans-serif;transition:all .15s;white-space:nowrap}
-        .edit-btn:hover{background:#ede9e4;color:#333}
+        .chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;background:#e8e8ed;color:#3a3a3c;font-weight:500}
+        .chip-red{background:#fff0f0;color:#C1121F;border:1px solid #ffcdd2}
+        .edit-btn{background:#f5f5f7;border:1px solid #d2d2d7;color:#86868b;padding:3px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+        .edit-btn:hover{background:#e8e8ed;color:#1d1d1f}
+        .section-heading{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;color:#1d1d1f}
+        .section-sub{color:#6e6e73;font-size:14px;margin-bottom:24px}
         ::-webkit-scrollbar{width:4px}
-        ::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
-        input,textarea,select{font-family:'Heebo',sans-serif}
+        ::-webkit-scrollbar-thumb{background:#d2d2d7;border-radius:4px}
+        input,textarea,select{font-family:inherit}
       `}</style>
 
-      {/* HERO */}
-      <div style={{ background:"#fff", borderBottom:"1px solid #ede9e4", padding:"44px 24px 32px", textAlign:"center", position:"relative", overflow:"hidden" }}>
-        <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:"linear-gradient(90deg,#C1121F,#E8361A,#C1121F)" }}/>
-        <div style={{ position:"absolute",inset:0,opacity:0.025,backgroundImage:"repeating-linear-gradient(45deg,#C1121F 0,#C1121F 1px,transparent 0,transparent 50%)",backgroundSize:"20px 20px" }}/>
-        <div className="fade-up" style={{ fontSize:11,letterSpacing:5,color:"#C1121F",textTransform:"uppercase",fontWeight:600,marginBottom:10 }}>✦ ספטמבר 2026 ✦</div>
-        <h1 className="gold-text fade-up" style={{ fontSize:"clamp(52px,13vw,84px)",fontFamily:"'Playfair Display',serif",fontWeight:900,lineHeight:1,animationDelay:"0.1s",marginBottom:10 }}>יפן</h1>
-        <div className="fade-up" style={{ fontSize:15,color:"#777",fontWeight:300,animationDelay:"0.2s",marginBottom:16 }}>טיול משפחת Jimenez · 8.9 – 29.9.2026</div>
-        <div className="fade-up" style={{ display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",animationDelay:"0.3s" }}>
-          {["21 ימים","5 ערים","🎉 בר מצווה"].map(t=>(
-            <span key={t} style={{ padding:"5px 16px",borderRadius:100,border:"1.5px solid #C1121F",color:"#C1121F",fontSize:13,fontWeight:600,background:"#FFF5F5" }}>{t}</span>
+      {/* ── HEADER ── */}
+      <header style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.92)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid #d2d2d7",padding:"0 20px",display:"flex",alignItems:"center",height:52,gap:8 }}>
+        <div style={{ display:"flex",alignItems:"center",gap:8,marginLeft:"auto" }}>
+          <span style={{ fontSize:18 }}>🎌</span>
+          <span style={{ fontWeight:700,fontSize:15,color:"#1d1d1f",letterSpacing:"-.3px" }}>יפן 2026</span>
+        </div>
+        <nav style={{ display:"flex",gap:2,margin:"0 auto" }}>
+          {[
+            {id:"itinerary",label:"לוז"},
+            {id:"checklist",label:`משימות ${done}/${checklist.length}`},
+            {id:"recs",label:"המלצות"},
+            {id:"packing",label:"ציוד"},
+          ].map(t=>(
+            <button key={t.id} className={`nav-tab${tab===t.id?" active":""}`} onClick={()=>setTab(t.id)}>{t.label}</button>
           ))}
+        </nav>
+        <div style={{ display:"flex",gap:8,marginRight:"auto",alignItems:"center" }}>
+          <button onClick={()=>setEditMode(!editMode)} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"#d2d2d7"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"#86868b",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
+            {editMode?"סיום ✓":"✏️"}
+          </button>
+          {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite" }}>שומר…</span>}
         </div>
-      </div>
+      </header>
 
-      {/* TABS */}
-      <div style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.96)",backdropFilter:"blur(12px)",borderBottom:"1px solid #ede9e4",padding:"10px 16px",overflowX:"auto" }}>
-        <div style={{ display:"flex",alignItems:"center",gap:6,justifyContent:"center",minWidth:"max-content",margin:"0 auto" }}>
-        {[{id:"itinerary",label:"📅 לוז"},{id:"checklist",label:`✅ ${done}/${checklist.length}`},{id:"recs",label:"⭐ המלצות"},{id:"packing",label:"🎒 מה להביא"}].map(t=>(
-          <button key={t.id} className="tab-btn" onClick={()=>setTab(t.id)} style={{ background:tab===t.id?"#C1121F":"#F5F5F3", color:tab===t.id?"#fff":"#666", fontWeight:tab===t.id?700:500, flexShrink:0 }}>{t.label}</button>
-        ))}
-        <button onClick={()=>setEditMode(!editMode)} style={{ padding:"8px 14px",border:`1.5px solid ${editMode?"#C1121F":"#e0ddd8"}`,background:editMode?"#FFF5F5":"transparent",color:editMode?"#C1121F":"#888",borderRadius:100,fontSize:13,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,transition:"all .2s",flexShrink:0 }}>
-          {editMode?"✓ סיום":"✏️"}
-        </button>
-        {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite",flexShrink:0 }}>שומר…</span>}
-        </div>
-      </div>
+      {/* ── MAIN ── */}
+      <main style={{ maxWidth:920,margin:"0 auto",padding:"0 20px 80px" }}>
 
-      <div style={{ maxWidth:760,margin:"0 auto",padding:"22px 14px 80px" }}>
-
-        {/* ITINERARY */}
+        {/* ── ITINERARY ── */}
         {tab==="itinerary"&&(
-          <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
-            {parts.map((part,pi)=>{
-              const isOpen=openPart===pi;
-              return (
-                <div key={pi} className="part-card fade-up" style={{ animationDelay:`${pi*0.05}s` }}>
-                  <div onClick={()=>setOpenPart(isOpen?null:pi)}
-                    style={{ padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:isOpen?"1px solid #f0ede8":"none",borderRight:`4px solid ${part.accent}`,background:isOpen?part.accentLight:"#fff",transition:"background .2s" }}>
-                    <div>
-                      <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",marginBottom:3,fontWeight:700 }}>{part.dates}</div>
-                      <div style={{ fontSize:20,fontWeight:900,fontFamily:"'Playfair Display',serif",color:"#1a1a1a" }}>{part.label}</div>
-                      <div style={{ fontSize:13,color:"#888",marginTop:2 }}>{part.sub}</div>
-                    </div>
-                    <div style={{ width:32,height:32,borderRadius:"50%",border:`2px solid ${part.accent}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:part.accent,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"none",flexShrink:0 }}>▾</div>
-                  </div>
-                  {isOpen&&(
-                    <div style={{ background:"#fff",padding:"4px 20px 16px" }}>
-                      {part.days.map((day,di)=>{
-                        const attr=day.attrKey?ATTRACTIONS.find(a=>a.name===day.attrKey):null;
-                        const noteKey=`${pi}_${di}`;
-                        const note=notes[noteKey];
-                        const isFirstOfDate = di===0 || part.days[di-1].date !== day.date;
-                        return (
-                          <div key={di} className="day-row" style={{ borderTop: isFirstOfDate && di>0 ? "2px solid #f0ede8" : undefined, marginTop: isFirstOfDate && di>0 ? 4 : 0 }}>
-                            <div style={{ flexShrink:0,width:44,textAlign:"center",paddingTop:2 }}>
-                              <div style={{ fontSize:20 }}>{day.icon}</div>
-                              <div style={{ fontSize:9,color: isFirstOfDate ? "#aaa" : "transparent",marginTop:2,fontWeight: isFirstOfDate ? 600 : 400 }}>{day.date}</div>
-                            </div>
-                            <div style={{ flex:1 }}>
-                              <div style={{ fontWeight:700,fontSize:14,color:"#1a1a1a",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
-                                {day.title}
-                                {attr&&<span style={{ fontSize:10,color:part.accent,border:`1px solid ${part.accent}44`,borderRadius:100,padding:"1px 8px",background:part.accentLight,fontWeight:600,cursor:"pointer" }} onClick={(e)=>{e.stopPropagation();setSelectedAttr(attr);}}>פרטים ↗</span>}
-                                {editMode&&<button className="edit-btn" onClick={(e)=>{e.stopPropagation();setEditDay({partId:pi,dayIdx:di,day});}}>✏️</button>}
-                              </div>
-                              <div style={{ fontSize:12,color:"#888",lineHeight:1.6 }}>{day.desc}</div>
-                              {note&&<div style={{ marginTop:6,fontSize:12,color:"#B5500B",background:"#FFF5EE",border:"1px solid #FFCDD2",borderRadius:8,padding:"6px 10px" }}>📝 {note}</div>}
-                              {editMode&&<button className="edit-btn" style={{ marginTop:6 }} onClick={(e)=>{e.stopPropagation();setAddNote({partId:pi,dayIdx:di,note:notes[noteKey]||""});}}>📝 {note?"ערוך":"הוסף"} הערה</button>}
-                            </div>
-                          </div>
-                        );
-                      })}
-                      <div style={{ marginTop:12,padding:"10px 14px",background:"#FAFAF8",borderRadius:10,border:"1px solid #ede9e4",display:"flex",gap:8,alignItems:"center" }}>
-                        <span>🏨</span>
-                        <span style={{ fontSize:12,color:"#666",flex:1 }}>{part.hotel}</span>
-                        <span style={{ fontSize:11,color:"#386641",fontWeight:700 }}>סגור ✓</span>
+          <div className="fade-up">
+            {/* Hero */}
+            <div style={{ textAlign:"center",padding:"52px 0 36px",borderBottom:"1px solid #f5f5f7",marginBottom:32 }}>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#C1121F",textTransform:"uppercase",fontWeight:600,marginBottom:12 }}>ספטמבר 2026</div>
+              <h1 style={{ fontSize:72,fontWeight:700,letterSpacing:-3,lineHeight:1,marginBottom:12,color:"#1d1d1f" }}>יפן</h1>
+              <p style={{ color:"#6e6e73",fontSize:15,marginBottom:20 }}>משפחת Jimenez · 8.9 – 29.9.2026</p>
+              <div style={{ display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:28 }}>
+                {["21 ימים","5 ערים","🎉 בר מצווה"].map(t=>(
+                  <span key={t} className="chip chip-red" style={{ fontSize:13,padding:"4px 14px" }}>{t}</span>
+                ))}
+              </div>
+              {/* Pipeline */}
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexWrap:"wrap" }}>
+                {parts.map((p,i)=>(
+                  <span key={i} style={{ display:"inline-flex",alignItems:"center",gap:6 }}>
+                    <span style={{ padding:"4px 12px",borderRadius:20,border:`1.5px solid ${p.accent}`,color:p.accent,background:p.accentLight,fontSize:12,fontWeight:600,cursor:"pointer" }}
+                      onClick={()=>setOpenPart(openPart===i?null:i)}>{p.label}</span>
+                    {i<parts.length-1&&<span style={{ color:"#d2d2d7",fontSize:14 }}>→</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* City cards grid */}
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12,marginBottom:28 }}>
+              {parts.map((part,pi)=>{
+                const isActive=openPart===pi;
+                return (
+                  <div key={pi} className={`city-card${isActive?" active":""}`}
+                    style={{ borderColor:isActive?part.accent:"#d2d2d7" }}
+                    onClick={()=>setOpenPart(isActive?null:pi)}>
+                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12 }}>
+                      <div style={{ width:46,height:46,borderRadius:12,background:part.accentLight,border:`1.5px solid ${part.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>
+                        {CITY_EMOJIS[pi]}
                       </div>
+                      <span style={{ fontSize:10,letterSpacing:2,color:part.accent,fontWeight:700,textTransform:"uppercase",marginTop:4 }}>{part.dates}</span>
                     </div>
-                  )}
+                    <h3 style={{ fontSize:17,fontWeight:700,color:"#1d1d1f",marginBottom:4,letterSpacing:"-.3px" }}>{part.label}</h3>
+                    <p style={{ fontSize:13,color:"#6e6e73",marginBottom:14,lineHeight:1.5 }}>{part.sub}</p>
+                    <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
+                      <span className="chip" style={{ fontSize:11 }}>{part.days.length} ימים</span>
+                      <span className="chip" style={{ fontSize:11,color:isActive?part.accent:"#86868b",background:isActive?part.accentLight:"#e8e8ed" }}>{isActive?"▲ סגור":"▼ פרטים"}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Expanded detail */}
+            {openPart!==null&&(()=>{
+              const part=parts[openPart];
+              return (
+                <div className="fade-up" style={{ background:"#fff",border:`1px solid ${part.accent}`,borderRadius:16,overflow:"hidden",marginBottom:24,boxShadow:`0 4px 24px ${part.accent}18` }}>
+                  <div style={{ padding:"18px 24px",borderBottom:"1px solid #f5f5f7",display:"flex",alignItems:"center",justifyContent:"space-between",background:part.accentLight }}>
+                    <div>
+                      <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",fontWeight:700,marginBottom:3 }}>{part.dates}</div>
+                      <h2 style={{ fontSize:22,fontWeight:700,color:"#1d1d1f",letterSpacing:"-.5px" }}>{part.label}</h2>
+                      <p style={{ fontSize:13,color:"#6e6e73",marginTop:2 }}>{part.sub}</p>
+                    </div>
+                    <span style={{ padding:"4px 12px",background:part.accent,color:"#fff",borderRadius:8,fontSize:12,fontWeight:700,flexShrink:0 }}>{part.days.length} ימים</span>
+                  </div>
+                  <div style={{ padding:"8px 24px 16px" }}>
+                    {part.days.map((day,di)=>{
+                      const attr=day.attrKey?ATTRACTIONS.find(a=>a.name===day.attrKey):null;
+                      const noteKey=`${openPart}_${di}`;
+                      const note=notes[noteKey];
+                      const isFirstOfDate=di===0||part.days[di-1].date!==day.date;
+                      return (
+                        <div key={di} className="day-row" style={{ borderTop:isFirstOfDate&&di>0?"2px solid #f5f5f7":undefined }}>
+                          <div style={{ flexShrink:0,width:44,textAlign:"center",paddingTop:2 }}>
+                            <div style={{ fontSize:18 }}>{day.icon}</div>
+                            <div style={{ fontSize:9,color:isFirstOfDate?"#86868b":"transparent",marginTop:2,fontWeight:600 }}>{day.date}</div>
+                          </div>
+                          <div style={{ flex:1 }}>
+                            <div style={{ fontWeight:600,fontSize:14,color:"#1d1d1f",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
+                              {day.title}
+                              {attr&&<span style={{ fontSize:10,color:part.accent,border:`1px solid ${part.accent}44`,borderRadius:100,padding:"1px 8px",background:part.accentLight,fontWeight:600,cursor:"pointer" }} onClick={e=>{e.stopPropagation();setSelectedAttr(attr);}}>פרטים ↗</span>}
+                              {editMode&&<button className="edit-btn" onClick={e=>{e.stopPropagation();setEditDay({partId:openPart,dayIdx:di,day});}}>✏️</button>}
+                            </div>
+                            <div style={{ fontSize:12,color:"#86868b",lineHeight:1.6 }}>{day.desc}</div>
+                            {note&&<div style={{ marginTop:6,fontSize:12,color:"#B5500B",background:"#FFF5EE",border:"1px solid #FFCDD2",borderRadius:8,padding:"5px 10px" }}>📝 {note}</div>}
+                            {editMode&&<button className="edit-btn" style={{ marginTop:6 }} onClick={e=>{e.stopPropagation();setAddNote({partId:openPart,dayIdx:di,note:notes[noteKey]||""});}}>📝 {note?"ערוך":"הוסף"} הערה</button>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div style={{ marginTop:12,padding:"10px 14px",background:"#f5f5f7",borderRadius:10,border:"1px solid #d2d2d7",display:"flex",gap:8,alignItems:"center" }}>
+                      <span>🏨</span>
+                      <span style={{ fontSize:12,color:"#6e6e73",flex:1 }}>{part.hotel}</span>
+                      <span style={{ fontSize:11,color:"#386641",fontWeight:700 }}>סגור ✓</span>
+                    </div>
+                  </div>
                 </div>
               );
-            })}
+            })()}
           </div>
         )}
 
-        {/* CHECKLIST */}
+        {/* ── CHECKLIST ── */}
         {tab==="checklist"&&(
           <div className="fade-up">
-            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"20px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
-              <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10 }}>
-                <span style={{ fontWeight:700,fontSize:16 }}>התקדמות</span>
-                <span className="gold-text" style={{ fontSize:24,fontWeight:900,fontFamily:"'Playfair Display',serif" }}>{done}/{checklist.length}</span>
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+              <h2 className="section-heading">משימות ✅</h2>
+              <p className="section-sub">הכנות לפני הטיסה – מעודכן לכל המשפחה בזמן אמת</p>
+            </div>
+            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
+              <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
+                <span style={{ fontWeight:600,fontSize:15 }}>התקדמות</span>
+                <span style={{ fontSize:20,fontWeight:700,color:"#1d1d1f" }}>{done}/{checklist.length}</span>
               </div>
-              <div style={{ height:6,background:"#f0ede8",borderRadius:6,overflow:"hidden" }}>
-                <div style={{ height:"100%",width:`${checklist.length?done/checklist.length*100:0}%`,background:"linear-gradient(90deg,#C8860A,#E8A020)",borderRadius:6,transition:"width 0.5s" }}/>
+              <div style={{ height:4,background:"#d2d2d7",borderRadius:4,overflow:"hidden" }}>
+                <div style={{ height:"100%",width:`${checklist.length?done/checklist.length*100:0}%`,background:"linear-gradient(90deg,#C8860A,#E8A020)",borderRadius:4,transition:"width 0.5s" }}/>
               </div>
-              <div style={{ marginTop:8,fontSize:12,color:"#aaa" }}>{done===checklist.length?"🎉 הכל מוכן לטיסה!":`נשארו ${checklist.length-done} משימות`}</div>
+              <div style={{ marginTop:6,fontSize:12,color:"#86868b" }}>{done===checklist.length?"🎉 הכל מוכן לטיסה!":`נשארו ${checklist.length-done} משימות`}</div>
             </div>
             {cats.map(cat=>(
               <div key={cat} style={{ marginBottom:16 }}>
-                <div style={{ fontSize:11,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase",paddingRight:2 }}>{cat}</div>
-                <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
                   {checklist.filter(i=>i.cat===cat).map(item=>(
                     <div key={item.id} className="check-row">
-                      <div onClick={()=>toggleCheck(item.id)} style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${item.done?"#386641":"#ddd"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                      <div onClick={()=>toggleCheck(item.id)} style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"#d2d2d7"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
                         {item.done&&"✓"}
                       </div>
-                      <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
-                      {item.urgent&&!item.done&&<span className="urgent">דחוף</span>}
+                      <div style={{ flex:1,fontSize:14,color:item.done?"#86868b":"#1d1d1f",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
+                      {item.urgent&&!item.done&&<span className="chip chip-red">דחוף</span>}
                       {editMode&&<button className="edit-btn" onClick={()=>setEditCheck(item)}>✏️</button>}
-                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={(e)=>askConfirm(e,"למחוק משימה זו?",()=>deleteCheckItem(item.id))}>🗑️</button>}
+                      {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>askConfirm(e,"למחוק משימה זו?",()=>deleteCheckItem(item.id))}>🗑️</button>}
                     </div>
                   ))}
                 </div>
               </div>
             ))}
             {editMode&&(
-              <button onClick={addCheckItem} style={{ width:"100%",padding:"13px",background:"#FFF5F5",border:"2px dashed #FFCDD2",borderRadius:14,color:"#C1121F",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,marginTop:8,transition:"background .2s" }}>
+              <button onClick={addCheckItem} style={{ width:"100%",padding:"12px",background:"#fff0f0",border:"2px dashed #ffcdd2",borderRadius:12,color:"#C1121F",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600,marginTop:8 }}>
                 + הוסף משימה חדשה
               </button>
             )}
-            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
           </div>
         )}
 
-        {/* RECOMMENDATIONS */}
+        {/* ── RECOMMENDATIONS ── */}
         {tab==="recs"&&(
           <div className="fade-up">
-            {/* AI Input */}
-            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
-              <div style={{ fontWeight:700,fontSize:16,marginBottom:4 }}>✨ הוסף המלצות בטקסט חופשי</div>
-              <div style={{ fontSize:12,color:"#aaa",marginBottom:12 }}>הדבק המלצה, טקסט מאינסטגרם, בלוג, או כל מקור – ה-AI יסדר אוטומטית</div>
-              <textarea
-                value={aiInput} onChange={e=>setAiInput(e.target.value)}
-                placeholder={`לדוגמה:\n"חייבים לאכול ב-Ichiran Ramen באוסקה, ראמן סולו מדהים. גם Takoyaki בדוטונבורי חובה. לקנות Kit Kat matcha בלאוסון."`}
-                rows={4} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"10px 12px",fontSize:13,color:"#333",outline:"none",resize:"vertical",fontFamily:"'Heebo',sans-serif",textAlign:"right",lineHeight:1.6,marginBottom:10 }}
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+              <h2 className="section-heading">המלצות ⭐</h2>
+              <p className="section-sub">מסעדות, אטרקציות ועצות – אספו מכל המקורות</p>
+            </div>
+            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"18px",marginBottom:14 }}>
+              <div style={{ fontWeight:600,fontSize:15,marginBottom:4 }}>✨ הוסף המלצות בטקסט חופשי</div>
+              <div style={{ fontSize:12,color:"#86868b",marginBottom:12 }}>הדבק המלצה, טקסט מאינסטגרם, בלוג, או כל מקור – ה-AI יסדר אוטומטית</div>
+              <textarea value={aiInput} onChange={e=>setAiInput(e.target.value)}
+                placeholder={`לדוגמה:\n"חייבים לאכול ב-Ichiran Ramen באוסקה..."`}
+                rows={3} style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"10px 12px",fontSize:13,color:"#1d1d1f",outline:"none",resize:"vertical",fontFamily:"inherit",textAlign:"right",lineHeight:1.6,marginBottom:10 }}
               />
-              <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"12px",background:aiLoading||!aiInput.trim()?"#f0ede8":"#C1121F",border:"none",borderRadius:12,color:aiLoading||!aiInput.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif",transition:"all .2s" }}>
+              <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"11px",background:aiLoading||!aiInput.trim()?"#e8e8ed":"#1d1d1f",border:"none",borderRadius:8,color:aiLoading||!aiInput.trim()?"#86868b":"#fff",fontWeight:600,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"inherit",transition:"all .2s" }}>
                 {aiLoading?"⏳ מסדר המלצות...":"✨ סדר והוסף להמלצות"}
               </button>
-              {aiError&&<div style={{ marginTop:10,padding:"9px 12px",background:"#FFF5F5",border:"1px solid #FFCDD2",borderRadius:10,color:"#C1121F",fontSize:12,textAlign:"right",wordBreak:"break-word",whiteSpace:"pre-wrap",direction:"ltr" }}>⚠️ {aiError}</div>}
+              {aiError&&<div style={{ marginTop:10,padding:"8px 12px",background:"#fff0f0",border:"1px solid #ffcdd2",borderRadius:8,color:"#C1121F",fontSize:12,textAlign:"right",wordBreak:"break-word",whiteSpace:"pre-wrap",direction:"ltr" }}>⚠️ {aiError}</div>}
             </div>
-
-            {/* Manual add (fallback) */}
-            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
-              <div style={{ fontWeight:700,fontSize:16,marginBottom:4 }}>✍️ הוסף המלצה ידנית</div>
-              <div style={{ fontSize:12,color:"#aaa",marginBottom:12 }}>אם ה-AI לא זמין – הוסף ישירות</div>
-              <select value={manualRec.cat} onChange={e=>setManualRec({...manualRec,cat:e.target.value})} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",fontFamily:"'Heebo',sans-serif" }}>
-                <option>אטרקציות</option>
-                <option>מסעדות</option>
-                <option>קניות</option>
-                <option>לינה</option>
-                <option>טיפים כלליים</option>
+            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"18px",marginBottom:24 }}>
+              <div style={{ fontWeight:600,fontSize:15,marginBottom:4 }}>✍️ הוסף המלצה ידנית</div>
+              <div style={{ fontSize:12,color:"#86868b",marginBottom:12 }}>אם ה-AI לא זמין – הוסף ישירות</div>
+              <select value={manualRec.cat} onChange={e=>setManualRec({...manualRec,cat:e.target.value})} style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",fontFamily:"inherit" }}>
+                <option>אטרקציות</option><option>מסעדות</option><option>קניות</option><option>לינה</option><option>טיפים כלליים</option>
               </select>
-              <input value={manualRec.title} onChange={e=>setManualRec({...manualRec,title:e.target.value})} placeholder="שם / כותרת" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
-              <input value={manualRec.desc} onChange={e=>setManualRec({...manualRec,desc:e.target.value})} placeholder="תיאור קצר (אופציונלי)" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
-              <input value={manualRec.loc} onChange={e=>setManualRec({...manualRec,loc:e.target.value})} placeholder="מיקום (אופציונלי)" style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",fontSize:13,marginBottom:10,outline:"none",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
-              <button onClick={addManualRec} disabled={!manualRec.title.trim()} style={{ width:"100%",padding:"12px",background:!manualRec.title.trim()?"#f0ede8":"#386641",border:"none",borderRadius:12,color:!manualRec.title.trim()?"#aaa":"#fff",fontWeight:700,fontSize:14,cursor:!manualRec.title.trim()?"default":"pointer",fontFamily:"'Heebo',sans-serif" }}>
+              <input value={manualRec.title} onChange={e=>setManualRec({...manualRec,title:e.target.value})} placeholder="שם / כותרת" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+              <input value={manualRec.desc} onChange={e=>setManualRec({...manualRec,desc:e.target.value})} placeholder="תיאור קצר (אופציונלי)" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+              <input value={manualRec.loc} onChange={e=>setManualRec({...manualRec,loc:e.target.value})} placeholder="מיקום (אופציונלי)" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:10,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+              <button onClick={addManualRec} disabled={!manualRec.title.trim()} style={{ width:"100%",padding:"11px",background:!manualRec.title.trim()?"#e8e8ed":"#1d1d1f",border:"none",borderRadius:8,color:!manualRec.title.trim()?"#86868b":"#fff",fontWeight:600,fontSize:14,cursor:!manualRec.title.trim()?"default":"pointer",fontFamily:"inherit" }}>
                 + הוסף המלצה
               </button>
             </div>
-
-            {/* Recs by category */}
-            {Object.keys(recs).length===0 ? (
-              <div style={{ textAlign:"center",color:"#ccc",padding:"40px 0",fontSize:14 }}>עדיין אין המלצות – הוסף מלמעלה!</div>
-            ) : (
+            {Object.keys(recs).length===0?(
+              <div style={{ textAlign:"center",color:"#86868b",padding:"40px 0",fontSize:14 }}>עדיין אין המלצות – הוסף מלמעלה!</div>
+            ):(
               [...new Set(Object.values(recs).map(r=>r.cat))].map(cat=>(
                 <div key={cat} style={{ marginBottom:16 }}>
-                  <div style={{ fontSize:12,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
-                  <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                  <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
                     {Object.values(recs).filter(r=>r.cat===cat).map(rec=>(
-                      <div key={rec.id} style={{ display:"flex",alignItems:"flex-start",gap:12,padding:"13px 16px",borderBottom:"1px solid #f0ede8",cursor:"pointer",transition:"background .15s" }}
-                        className="check-row" onClick={()=>toggleRec(rec.id)}>
-                        <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${rec.done?"#386641":"#ddd"}`,background:rec.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",marginTop:1 }}>
+                      <div key={rec.id} className="check-row" onClick={()=>toggleRec(rec.id)}>
+                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${rec.done?"#386641":"#d2d2d7"}`,background:rec.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s" }}>
                           {rec.done&&"✓"}
                         </div>
                         <div style={{ flex:1 }}>
-                          <div style={{ fontWeight:700,fontSize:14,color:rec.done?"#bbb":"#1a1a1a",textDecoration:rec.done?"line-through":"none" }}>{rec.title}</div>
-                          {rec.desc&&<div style={{ fontSize:12,color:"#888",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
+                          <div style={{ fontWeight:600,fontSize:14,color:rec.done?"#86868b":"#1d1d1f",textDecoration:rec.done?"line-through":"none" }}>{rec.title}</div>
+                          {rec.desc&&<div style={{ fontSize:12,color:"#86868b",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
                           {rec.loc&&<div style={{ fontSize:11,color:"#C1121F",marginTop:2 }}>📍 {rec.loc}</div>}
                         </div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5",flexShrink:0 }} onClick={e=>askConfirm(e,"למחוק המלצה זו?",()=>deleteRec(rec.id))}>🗑️</button>}
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0",flexShrink:0 }} onClick={e=>askConfirm(e,"למחוק המלצה זו?",()=>deleteRec(rec.id))}>🗑️</button>}
                       </div>
                     ))}
                   </div>
                 </div>
               ))
             )}
-            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ ההמלצות משותפות לכל המשפחה</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ ההמלצות משותפות לכל המשפחה</div>
           </div>
         )}
 
-        {/* PACKING LIST */}
+        {/* ── PACKING ── */}
         {tab==="packing"&&(
           <div className="fade-up">
-            {/* Progress */}
-            <div style={{ background:"#fff",border:"1px solid #ede9e4",borderRadius:16,padding:"18px",marginBottom:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)" }}>
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+              <h2 className="section-heading">מה להביא 🎒</h2>
+              <p className="section-sub">רשימת ציוד לטיול – משותפת לכל המשפחה</p>
+            </div>
+            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
-                <span style={{ fontWeight:700,fontSize:16 }}>🎒 מה להביא ליפן</span>
-                <span style={{ fontSize:13,color:"#386641",fontWeight:700 }}>{Object.values(packing).filter(p=>p.done).length}/{Object.values(packing).length}</span>
+                <span style={{ fontWeight:600,fontSize:15 }}>התקדמות</span>
+                <span style={{ fontSize:15,color:"#386641",fontWeight:700 }}>{Object.values(packing).filter(p=>p.done).length}/{Object.values(packing).length}</span>
               </div>
-              <div style={{ height:5,background:"#f0ede8",borderRadius:5,overflow:"hidden" }}>
-                <div style={{ height:"100%",width:`${Object.values(packing).length?Object.values(packing).filter(p=>p.done).length/Object.values(packing).length*100:0}%`,background:"linear-gradient(90deg,#386641,#52B788)",borderRadius:5,transition:"width 0.5s" }}/>
+              <div style={{ height:4,background:"#d2d2d7",borderRadius:4,overflow:"hidden" }}>
+                <div style={{ height:"100%",width:`${Object.values(packing).length?Object.values(packing).filter(p=>p.done).length/Object.values(packing).length*100:0}%`,background:"linear-gradient(90deg,#386641,#52B788)",borderRadius:4,transition:"width 0.5s" }}/>
               </div>
             </div>
-
-            {Object.values(packing).length===0 ? (
-              <div style={{ textAlign:"center",color:"#ccc",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
-            ) : (
+            {Object.values(packing).length===0?(
+              <div style={{ textAlign:"center",color:"#86868b",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
+            ):(
               [...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
                 <div key={cat} style={{ marginBottom:16 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#bbb",marginBottom:7,textTransform:"uppercase" }}>{cat}</div>
-                  <div style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #ede9e4",boxShadow:"0 1px 8px rgba(0,0,0,0.04)" }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                  <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
                     {Object.values(packing).filter(p=>p.cat===cat).map(item=>(
                       <div key={item.id} className="check-row" onClick={()=>togglePacking(item.id)}>
-                        <div style={{ width:22,height:22,borderRadius:7,flexShrink:0,border:`2px solid ${item.done?"#386641":"#ddd"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"#d2d2d7"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
                           {item.done&&"✓"}
                         </div>
-                        <div style={{ flex:1,fontSize:14,color:item.done?"#bbb":"#333",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#FFCDD2",background:"#FFF5F5" }} onClick={e=>{console.log("trash click item:",item);askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>}
+                        <div style={{ flex:1,fontSize:14,color:item.done?"#86868b":"#1d1d1f",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
+                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>{e.stopPropagation();askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>}
                       </div>
                     ))}
                   </div>
                 </div>
               ))
             )}
-            <button onClick={addPackingItem} style={{ width:"100%",padding:"13px",background:"#F0F7F0",border:"2px dashed #B7DFC0",borderRadius:14,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif",fontWeight:600,marginTop:8 }}>
+            <button onClick={addPackingItem} style={{ width:"100%",padding:"12px",background:"#f0f7f0",border:"2px dashed #B7DFC0",borderRadius:12,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600,marginTop:8 }}>
               + הוסף פריט
             </button>
-            <div style={{ textAlign:"center",fontSize:12,color:"#ccc",marginTop:12 }}>✦ הרשימה משותפת לכל המשפחה</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ הרשימה משותפת לכל המשפחה</div>
           </div>
         )}
-      </div>
+      </main>
 
       {selectedAttr&&<AttractionModal attr={selectedAttr} onClose={()=>setSelectedAttr(null)}/>}
-      {editDay&&<EditDayModal {...editDay} onSave={(d)=>saveDay(editDay.partId,editDay.dayIdx,d)} onClose={()=>setEditDay(null)}/>}
+      {editDay&&<EditDayModal {...editDay} onSave={d=>saveDay(editDay.partId,editDay.dayIdx,d)} onClose={()=>setEditDay(null)}/>}
       {editCheck&&<EditCheckModal item={editCheck} onSave={saveCheckItem} onClose={()=>setEditCheck(null)}/>}
-      {addNote&&<AddNoteModal {...addNote} onSave={(t)=>saveNote(addNote.partId,addNote.dayIdx,t)} onClose={()=>setAddNote(null)}/>}
+      {addNote&&<AddNoteModal {...addNote} onSave={t=>saveNote(addNote.partId,addNote.dayIdx,t)} onClose={()=>setAddNote(null)}/>}
       {confirmDlg&&(
         <div onClick={()=>setConfirmDlg(null)} style={{ position:"fixed",inset:0,zIndex:3000 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"#fff",border:"1px solid #ede9e4",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.18)",fontFamily:"'Heebo',sans-serif" }}>
-            <div style={{ fontSize:13,color:"#1a1a1a",marginBottom:10,textAlign:"right" }}>{confirmDlg.message}</div>
+          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"#fff",border:"1px solid #d2d2d7",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.15)",fontFamily:"inherit" }}>
+            <div style={{ fontSize:13,color:"#1d1d1f",marginBottom:10,textAlign:"right" }}>{confirmDlg.message}</div>
             <div style={{ display:"flex",gap:8 }}>
-              <button onClick={()=>{ confirmDlg.onConfirm(); setConfirmDlg(null); }} style={{ flex:1,padding:"7px",background:"#C1121F",border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>מחק</button>
-              <button onClick={()=>setConfirmDlg(null)} style={{ flex:1,padding:"7px",background:"#f5f5f3",border:"1px solid #e0ddd8",borderRadius:8,color:"#666",fontSize:12,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>ביטול</button>
+              <button onClick={()=>{confirmDlg.onConfirm();setConfirmDlg(null);}} style={{ flex:1,padding:"7px",background:"#C1121F",border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>מחק</button>
+              <button onClick={()=>setConfirmDlg(null)} style={{ flex:1,padding:"7px",background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:8,color:"#6e6e73",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
             </div>
           </div>
         </div>
