@@ -320,28 +320,28 @@ const ATTRACTIONS = [
 function AttractionModal({ attr, onClose }) {
   return (
     <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:1000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"flex-end",justifyContent:"center" }}>
-      <div onClick={e=>e.stopPropagation()} style={{ width:"100%",maxWidth:680,maxHeight:"91vh",overflowY:"auto",background:"#fff",borderRadius:"24px 24px 0 0",boxShadow:"0 -8px 40px rgba(0,0,0,0.15)",animation:"slideUp 0.3s cubic-bezier(0.34,1.2,0.64,1)" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ width:"100%",maxWidth:680,maxHeight:"91vh",overflowY:"auto",background:"var(--bg)",borderRadius:"24px 24px 0 0",boxShadow:"0 -8px 40px rgba(0,0,0,0.25)",animation:"slideUp 0.3s cubic-bezier(0.34,1.2,0.64,1)" }}>
         <div style={{ height:160,background:`linear-gradient(160deg,${attr.color}22 0%,${attr.color}08 100%)`,borderRadius:"24px 24px 0 0",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",borderBottom:`3px solid ${attr.color}` }}>
           <div style={{ textAlign:"center" }}>
             <div style={{ fontSize:56 }}>{attr.emoji}</div>
-            <div style={{ fontSize:20,fontWeight:800,fontFamily:"'Playfair Display',serif",marginTop:6,color:"#1a1a1a" }}>{attr.name}</div>
-            <div style={{ fontSize:12,color:"#999",marginTop:3 }}>📍 {attr.loc} · {attr.day}</div>
+            <div style={{ fontSize:20,fontWeight:800,marginTop:6,color:"var(--text)" }}>{attr.name}</div>
+            <div style={{ fontSize:12,color:"var(--text-mute)",marginTop:3 }}>📍 {attr.loc} · {attr.day}</div>
           </div>
-          <button onClick={onClose} style={{ position:"absolute",top:14,left:14,width:32,height:32,borderRadius:"50%",background:"#f5f5f5",border:"1px solid #e0e0e0",color:"#666",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>✕</button>
+          <button onClick={onClose} style={{ position:"absolute",top:14,left:14,width:32,height:32,borderRadius:"50%",background:"var(--surface)",border:"1px solid var(--border)",color:"var(--text-mute)",fontSize:16,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>✕</button>
         </div>
-        <div style={{ padding:"16px 20px 44px",fontFamily:"'Heebo',sans-serif" }}>
+        <div style={{ padding:"16px 20px 44px",fontFamily:"inherit" }}>
           <div style={{ display:"flex",gap:6,flexWrap:"wrap",marginBottom:14 }}>
             {attr.tags.map(t=><span key={t} style={{ fontSize:12,padding:"3px 10px",borderRadius:100,background:`${attr.color}15`,color:attr.color,border:`1px solid ${attr.color}30`,fontWeight:600 }}>{t}</span>)}
           </div>
-          <p style={{ fontSize:14,color:"#444",lineHeight:1.8,marginBottom:14 }}>{attr.description}</p>
+          <p style={{ fontSize:14,color:"var(--text-sub)",lineHeight:1.8,marginBottom:14 }}>{attr.description}</p>
           <LightBlock title="✦ למה כדאי" color={attr.color}>
             {attr.highlights.map((h,i)=><LightRow key={i} icon="★" text={h} color={attr.color}/>)}
           </LightBlock>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,margin:"12px 0" }}>
             {[["🕐","שעות",attr.hours],["🎫","כניסה",attr.price],["⭐","הזמן הטוב",attr.bestTime],["🚃","הגעה",attr.howToGet]].map(([ic,lb,vl])=>(
-              <div key={lb} style={{ background:"#fafaf8",border:"1px solid #ede9e4",borderRadius:12,padding:"10px 12px" }}>
-                <div style={{ fontSize:10,color:"#aaa",marginBottom:3 }}>{ic} {lb}</div>
-                <div style={{ fontSize:12,color:"#444",lineHeight:1.5 }}>{vl}</div>
+              <div key={lb} style={{ background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,padding:"10px 12px" }}>
+                <div style={{ fontSize:10,color:"var(--text-mute)",marginBottom:3 }}>{ic} {lb}</div>
+                <div style={{ fontSize:12,color:"var(--text-sub)",lineHeight:1.5 }}>{vl}</div>
               </div>
             ))}
           </div>
@@ -364,7 +364,7 @@ function LightBlock({ title, color, children }) {
   return <div style={{ background:`${color}08`,border:`1px solid ${color}20`,borderRadius:14,padding:"12px 14px",marginBottom:10 }}><div style={{ fontSize:12,fontWeight:700,color,marginBottom:8 }}>{title}</div><div style={{ display:"flex",flexDirection:"column",gap:6 }}>{children}</div></div>;
 }
 function LightRow({ icon, text, color }) {
-  return <div style={{ display:"flex",gap:8,alignItems:"flex-start" }}><span style={{ color:color||"#ccc",fontSize:11,flexShrink:0,marginTop:2 }}>{icon}</span><span style={{ fontSize:13,color:"#555",lineHeight:1.6 }}>{text}</span></div>;
+  return <div style={{ display:"flex",gap:8,alignItems:"flex-start" }}><span style={{ color:color||"var(--text-mute)",fontSize:11,flexShrink:0,marginTop:2 }}>{icon}</span><span style={{ fontSize:13,color:"var(--text-sub)",lineHeight:1.6 }}>{text}</span></div>;
 }
 
 // ── Edit Modals ──
@@ -373,20 +373,20 @@ function EditDayModal({ partId, dayIdx, day, onSave, onClose }) {
   const [desc, setDesc] = useState(day.desc);
   const [icon, setIcon] = useState(day.icon);
   return (
-    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.4)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
-      <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",fontFamily:"'Heebo',sans-serif" }}>
-        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"#1a1a1a" }}>✏️ עריכת יום</div>
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg)",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.3)",fontFamily:"inherit" }}>
+        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"var(--text)" }}>✏️ עריכת יום</div>
         {[["אייקון",icon,setIcon,20,"right"],["כותרת",title,setTitle,14,"right"]].map(([lb,val,set,fs,align])=>(
           <div key={lb}>
-            <label style={{ fontSize:12,color:"#999",display:"block",marginBottom:4 }}>{lb}</label>
-            <input value={val} onChange={e=>set(e.target.value)} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",color:"#1a1a1a",fontSize:fs,marginBottom:14,outline:"none",textAlign:align }}/>
+            <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>{lb}</label>
+            <input value={val} onChange={e=>set(e.target.value)} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:fs,marginBottom:14,outline:"none",textAlign:align }}/>
           </div>
         ))}
-        <label style={{ fontSize:12,color:"#999",display:"block",marginBottom:4 }}>תיאור</label>
-        <textarea value={desc} onChange={e=>setDesc(e.target.value)} rows={3} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",color:"#1a1a1a",fontSize:13,marginBottom:20,outline:"none",resize:"vertical",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
+        <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>תיאור</label>
+        <textarea value={desc} onChange={e=>setDesc(e.target.value)} rows={3} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:13,marginBottom:20,outline:"none",resize:"vertical",textAlign:"right",fontFamily:"inherit" }}/>
         <div style={{ display:"flex",gap:10 }}>
-          <button onClick={()=>onSave({...day,title,desc,icon})} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>שמור</button>
-          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"#f5f5f3",border:"1px solid #e0ddd8",borderRadius:12,color:"#666",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>ביטול</button>
+          <button onClick={()=>onSave({...day,title,desc,icon})} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>שמור</button>
+          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
         </div>
       </div>
     </div>
@@ -398,24 +398,24 @@ function EditCheckModal({ item, onSave, onClose }) {
   const [cat, setCat] = useState(item.cat);
   const [urgent, setUrgent] = useState(item.urgent);
   return (
-    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.4)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
-      <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",fontFamily:"'Heebo',sans-serif" }}>
-        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"#1a1a1a" }}>✏️ עריכת משימה</div>
-        <label style={{ fontSize:12,color:"#999",display:"block",marginBottom:4 }}>טקסט</label>
-        <input value={text} onChange={e=>setText(e.target.value)} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",color:"#1a1a1a",fontSize:14,marginBottom:14,outline:"none",textAlign:"right" }}/>
-        <label style={{ fontSize:12,color:"#999",display:"block",marginBottom:4 }}>קטגוריה</label>
-        <select value={cat} onChange={e=>setCat(e.target.value)} style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",color:"#1a1a1a",fontSize:14,marginBottom:14,outline:"none",fontFamily:"'Heebo',sans-serif" }}>
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg)",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.3)",fontFamily:"inherit" }}>
+        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"var(--text)" }}>✏️ עריכת משימה</div>
+        <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>טקסט</label>
+        <input value={text} onChange={e=>setText(e.target.value)} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,marginBottom:14,outline:"none",textAlign:"right" }}/>
+        <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>קטגוריה</label>
+        <select value={cat} onChange={e=>setCat(e.target.value)} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,marginBottom:14,outline:"none",fontFamily:"inherit" }}>
           <option>🎟️ כרטיסים</option>
           <option>🏨 מלונות</option>
           <option>🧳 לוגיסטיקה</option>
         </select>
-        <label style={{ display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:20,color:"#444",fontSize:14 }}>
+        <label style={{ display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:20,color:"var(--text-sub)",fontSize:14 }}>
           <input type="checkbox" checked={urgent} onChange={e=>setUrgent(e.target.checked)} style={{ width:18,height:18,accentColor:"#C1121F" }}/>
           סמן כדחוף
         </label>
         <div style={{ display:"flex",gap:10 }}>
-          <button onClick={()=>onSave({...item,text,cat,urgent})} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>שמור</button>
-          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"#f5f5f3",border:"1px solid #e0ddd8",borderRadius:12,color:"#666",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>ביטול</button>
+          <button onClick={()=>onSave({...item,text,cat,urgent})} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>שמור</button>
+          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
         </div>
       </div>
     </div>
@@ -425,13 +425,13 @@ function EditCheckModal({ item, onSave, onClose }) {
 function AddNoteModal({ partId, dayIdx, note, onSave, onClose }) {
   const [text, setText] = useState(note||"");
   return (
-    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.4)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
-      <div onClick={e=>e.stopPropagation()} style={{ background:"#fff",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.2)",fontFamily:"'Heebo',sans-serif" }}>
-        <div style={{ fontSize:18,fontWeight:700,marginBottom:16,color:"#1a1a1a" }}>📝 הערה ליום</div>
-        <textarea value={text} onChange={e=>setText(e.target.value)} rows={4} placeholder="כתוב הערה לכל המשפחה..." style={{ width:"100%",background:"#fafaf8",border:"1px solid #e0ddd8",borderRadius:10,padding:"9px 12px",color:"#1a1a1a",fontSize:14,marginBottom:16,outline:"none",resize:"vertical",textAlign:"right",fontFamily:"'Heebo',sans-serif" }}/>
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg)",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.3)",fontFamily:"inherit" }}>
+        <div style={{ fontSize:18,fontWeight:700,marginBottom:16,color:"var(--text)" }}>📝 הערה ליום</div>
+        <textarea value={text} onChange={e=>setText(e.target.value)} rows={4} placeholder="כתוב הערה לכל המשפחה..." style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,marginBottom:16,outline:"none",resize:"vertical",textAlign:"right",fontFamily:"inherit" }}/>
         <div style={{ display:"flex",gap:10 }}>
-          <button onClick={()=>onSave(text)} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>שמור</button>
-          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"#f5f5f3",border:"1px solid #e0ddd8",borderRadius:12,color:"#666",fontSize:14,cursor:"pointer",fontFamily:"'Heebo',sans-serif" }}>ביטול</button>
+          <button onClick={()=>onSave(text)} style={{ flex:1,padding:"12px",background:"#C1121F",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>שמור</button>
+          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
         </div>
       </div>
     </div>
@@ -458,6 +458,7 @@ export default function JapanTrip() {
   const [aiError, setAiError] = useState("");
   const [manualRec, setManualRec] = useState({ cat:"אטרקציות", title:"", desc:"", loc:"" });
   const [confirmDlg, setConfirmDlg] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   function askConfirm(e, message, onConfirm) {
     e.stopPropagation();
@@ -626,8 +627,20 @@ export default function JapanTrip() {
 
   const CITY_EMOJIS = ["🗼","🗻","⛩️","🎢","✈️"];
 
+  const cssVars = darkMode ? {
+    "--bg":"#1d1d1f","--surface":"#2c2c2e","--border":"#3a3a3c",
+    "--text":"#f5f5f7","--text-sub":"#a1a1a6","--text-mute":"#6e6e73",
+    "--chip-bg":"#3a3a3c","--chip-text":"#d1d1d6",
+    "--header-bg":"rgba(29,29,31,0.92)","--hover":"#252527","--input-bg":"#3a3a3c",
+  } : {
+    "--bg":"#ffffff","--surface":"#f5f5f7","--border":"#d2d2d7",
+    "--text":"#1d1d1f","--text-sub":"#6e6e73","--text-mute":"#86868b",
+    "--chip-bg":"#e8e8ed","--chip-text":"#3a3a3c",
+    "--header-bg":"rgba(255,255,255,0.92)","--hover":"#fafafa","--input-bg":"#ffffff",
+  };
+
   return (
-    <div dir="rtl" style={{ minHeight:"100vh", background:"#fff", fontFamily:`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Heebo", sans-serif`, color:"#1d1d1f" }}>
+    <div dir="rtl" style={{ minHeight:"100vh", background:"var(--bg)", fontFamily:`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Heebo", sans-serif`, color:"var(--text)", ...cssVars }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -635,34 +648,34 @@ export default function JapanTrip() {
         @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
         .fade-up{animation:fadeUp .4s ease both}
-        .nav-tab{padding:6px 13px;border:none;cursor:pointer;border-radius:8px;font-size:14px;font-weight:500;transition:all .15s;background:transparent;color:#6e6e73;font-family:inherit}
-        .nav-tab:hover{background:#f5f5f7;color:#1d1d1f}
-        .nav-tab.active{background:#f5f5f7;color:#1d1d1f;font-weight:600}
-        .city-card{background:#f5f5f7;border:1px solid #d2d2d7;border-radius:16px;padding:20px;cursor:pointer;transition:all .2s}
-        .city-card:hover{border-color:#86868b;box-shadow:0 4px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
-        .city-card.active{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.1)}
-        .day-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #f5f5f7;align-items:flex-start;transition:background .15s,padding-right .15s}
+        .nav-tab{padding:6px 13px;border:none;cursor:pointer;border-radius:8px;font-size:14px;font-weight:500;transition:all .15s;background:transparent;color:var(--text-mute);font-family:inherit}
+        .nav-tab:hover{background:var(--surface);color:var(--text)}
+        .nav-tab.active{background:var(--surface);color:var(--text);font-weight:600}
+        .city-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s}
+        .city-card:hover{border-color:#86868b;box-shadow:0 4px 20px rgba(0,0,0,.12);transform:translateY(-2px)}
+        .city-card.active{background:var(--bg);box-shadow:0 4px 24px rgba(0,0,0,.12)}
+        .day-row{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--surface);align-items:flex-start;transition:background .15s,padding-right .15s}
         .day-row:last-child{border-bottom:none}
-        .day-row:hover{background:#fafafa;padding-right:4px;border-radius:8px}
-        .check-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid #f5f5f7;transition:background .15s}
-        .check-row:hover{background:#fafafa}
+        .day-row:hover{background:var(--hover);padding-right:4px;border-radius:8px}
+        .check-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--surface);transition:background .15s}
+        .check-row:hover{background:var(--hover)}
         .check-row:last-child{border-bottom:none}
-        .chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;background:#e8e8ed;color:#3a3a3c;font-weight:500}
+        .chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;background:var(--chip-bg);color:var(--chip-text);font-weight:500}
         .chip-red{background:#fff0f0;color:#C1121F;border:1px solid #ffcdd2}
-        .edit-btn{background:#f5f5f7;border:1px solid #d2d2d7;color:#86868b;padding:3px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
-        .edit-btn:hover{background:#e8e8ed;color:#1d1d1f}
-        .section-heading{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;color:#1d1d1f}
-        .section-sub{color:#6e6e73;font-size:14px;margin-bottom:24px}
+        .edit-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-mute);padding:3px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+        .edit-btn:hover{background:var(--chip-bg);color:var(--text)}
+        .section-heading{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;color:var(--text)}
+        .section-sub{color:var(--text-sub);font-size:14px;margin-bottom:24px}
         ::-webkit-scrollbar{width:4px}
-        ::-webkit-scrollbar-thumb{background:#d2d2d7;border-radius:4px}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
         input,textarea,select{font-family:inherit}
       `}</style>
 
       {/* ── HEADER ── */}
-      <header style={{ position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.92)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid #d2d2d7",padding:"0 20px",display:"flex",alignItems:"center",height:52,gap:8 }}>
+      <header style={{ position:"sticky",top:0,zIndex:100,background:"var(--header-bg)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid var(--border)",padding:"0 20px",display:"flex",alignItems:"center",height:52,gap:8 }}>
         <div style={{ display:"flex",alignItems:"center",gap:8,marginLeft:"auto" }}>
           <span style={{ fontSize:18 }}>🎌</span>
-          <span style={{ fontWeight:700,fontSize:15,color:"#1d1d1f",letterSpacing:"-.3px" }}>יפן 2026</span>
+          <span style={{ fontWeight:700,fontSize:15,color:"var(--text)",letterSpacing:"-.3px" }}>יפן 2026</span>
         </div>
         <nav style={{ display:"flex",gap:2,margin:"0 auto" }}>
           {[
@@ -674,8 +687,11 @@ export default function JapanTrip() {
             <button key={t.id} className={`nav-tab${tab===t.id?" active":""}`} onClick={()=>setTab(t.id)}>{t.label}</button>
           ))}
         </nav>
-        <div style={{ display:"flex",gap:8,marginRight:"auto",alignItems:"center" }}>
-          <button onClick={()=>setEditMode(!editMode)} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"#d2d2d7"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"#86868b",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
+        <div style={{ display:"flex",gap:6,marginRight:"auto",alignItems:"center" }}>
+          <button onClick={()=>setDarkMode(!darkMode)} style={{ width:32,height:32,borderRadius:8,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text-sub)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0 }}>
+            {darkMode?"☀":"☾"}
+          </button>
+          <button onClick={()=>setEditMode(!editMode)} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
             {editMode?"סיום ✓":"✏️"}
           </button>
           {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite" }}>שומר…</span>}
@@ -689,10 +705,10 @@ export default function JapanTrip() {
         {tab==="itinerary"&&(
           <div className="fade-up">
             {/* Hero */}
-            <div style={{ textAlign:"center",padding:"52px 0 36px",borderBottom:"1px solid #f5f5f7",marginBottom:32 }}>
+            <div style={{ textAlign:"center",padding:"52px 0 36px",borderBottom:"1px solid var(--border)",marginBottom:32 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#C1121F",textTransform:"uppercase",fontWeight:600,marginBottom:12 }}>ספטמבר 2026</div>
-              <h1 style={{ fontSize:72,fontWeight:700,letterSpacing:-3,lineHeight:1,marginBottom:12,color:"#1d1d1f" }}>יפן</h1>
-              <p style={{ color:"#6e6e73",fontSize:15,marginBottom:20 }}>משפחת Jimenez · 8.9 – 29.9.2026</p>
+              <h1 style={{ fontSize:72,fontWeight:700,letterSpacing:-3,lineHeight:1,marginBottom:12,color:"var(--text)" }}>יפן</h1>
+              <p style={{ color:"var(--text-sub)",fontSize:15,marginBottom:20 }}>משפחת Jimenez · 8.9 – 29.9.2026</p>
               <div style={{ display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:28 }}>
                 {["21 ימים","5 ערים","🎉 בר מצווה"].map(t=>(
                   <span key={t} className="chip chip-red" style={{ fontSize:13,padding:"4px 14px" }}>{t}</span>
@@ -704,7 +720,7 @@ export default function JapanTrip() {
                   <span key={i} style={{ display:"inline-flex",alignItems:"center",gap:6 }}>
                     <span style={{ padding:"4px 12px",borderRadius:20,border:`1.5px solid ${p.accent}`,color:p.accent,background:p.accentLight,fontSize:12,fontWeight:600,cursor:"pointer" }}
                       onClick={()=>setOpenPart(openPart===i?null:i)}>{p.label}</span>
-                    {i<parts.length-1&&<span style={{ color:"#d2d2d7",fontSize:14 }}>→</span>}
+                    {i<parts.length-1&&<span style={{ color:"var(--border)",fontSize:14 }}>→</span>}
                   </span>
                 ))}
               </div>
@@ -716,7 +732,7 @@ export default function JapanTrip() {
                 const isActive=openPart===pi;
                 return (
                   <div key={pi} className={`city-card${isActive?" active":""}`}
-                    style={{ borderColor:isActive?part.accent:"#d2d2d7" }}
+                    style={{ borderColor:isActive?part.accent:"var(--border)" }}
                     onClick={()=>setOpenPart(isActive?null:pi)}>
                     <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12 }}>
                       <div style={{ width:46,height:46,borderRadius:12,background:part.accentLight,border:`1.5px solid ${part.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>
@@ -724,11 +740,11 @@ export default function JapanTrip() {
                       </div>
                       <span style={{ fontSize:10,letterSpacing:2,color:part.accent,fontWeight:700,textTransform:"uppercase",marginTop:4 }}>{part.dates}</span>
                     </div>
-                    <h3 style={{ fontSize:17,fontWeight:700,color:"#1d1d1f",marginBottom:4,letterSpacing:"-.3px" }}>{part.label}</h3>
-                    <p style={{ fontSize:13,color:"#6e6e73",marginBottom:14,lineHeight:1.5 }}>{part.sub}</p>
+                    <h3 style={{ fontSize:17,fontWeight:700,color:"var(--text)",marginBottom:4,letterSpacing:"-.3px" }}>{part.label}</h3>
+                    <p style={{ fontSize:13,color:"var(--text-sub)",marginBottom:14,lineHeight:1.5 }}>{part.sub}</p>
                     <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
                       <span className="chip" style={{ fontSize:11 }}>{part.days.length} ימים</span>
-                      <span className="chip" style={{ fontSize:11,color:isActive?part.accent:"#86868b",background:isActive?part.accentLight:"#e8e8ed" }}>{isActive?"▲ סגור":"▼ פרטים"}</span>
+                      <span className="chip" style={{ fontSize:11,color:isActive?part.accent:"var(--text-mute)",background:isActive?part.accentLight:"var(--chip-bg)" }}>{isActive?"▲ סגור":"▼ פרטים"}</span>
                     </div>
                   </div>
                 );
@@ -739,8 +755,8 @@ export default function JapanTrip() {
             {openPart!==null&&(()=>{
               const part=parts[openPart];
               return (
-                <div className="fade-up" style={{ background:"#fff",border:`1px solid ${part.accent}`,borderRadius:16,overflow:"hidden",marginBottom:24,boxShadow:`0 4px 24px ${part.accent}18` }}>
-                  <div style={{ padding:"18px 24px",borderBottom:"1px solid #f5f5f7",display:"flex",alignItems:"center",justifyContent:"space-between",background:part.accentLight }}>
+                <div className="fade-up" style={{ background:"var(--bg)",border:`1px solid ${part.accent}`,borderRadius:16,overflow:"hidden",marginBottom:24,boxShadow:`0 4px 24px ${part.accent}18` }}>
+                  <div style={{ padding:"18px 24px",borderBottom:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"space-between",background:part.accentLight }}>
                     <div>
                       <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",fontWeight:700,marginBottom:3 }}>{part.dates}</div>
                       <h2 style={{ fontSize:22,fontWeight:700,color:"#1d1d1f",letterSpacing:"-.5px" }}>{part.label}</h2>
@@ -755,27 +771,27 @@ export default function JapanTrip() {
                       const note=notes[noteKey];
                       const isFirstOfDate=di===0||part.days[di-1].date!==day.date;
                       return (
-                        <div key={di} className="day-row" style={{ borderTop:isFirstOfDate&&di>0?"2px solid #f5f5f7":undefined }}>
+                        <div key={di} className="day-row" style={{ borderTop:isFirstOfDate&&di>0?"2px solid var(--surface)":undefined }}>
                           <div style={{ flexShrink:0,width:44,textAlign:"center",paddingTop:2 }}>
                             <div style={{ fontSize:18 }}>{day.icon}</div>
-                            <div style={{ fontSize:9,color:isFirstOfDate?"#86868b":"transparent",marginTop:2,fontWeight:600 }}>{day.date}</div>
+                            <div style={{ fontSize:9,color:isFirstOfDate?"var(--text-mute)":"transparent",marginTop:2,fontWeight:600 }}>{day.date}</div>
                           </div>
                           <div style={{ flex:1 }}>
-                            <div style={{ fontWeight:600,fontSize:14,color:"#1d1d1f",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
+                            <div style={{ fontWeight:600,fontSize:14,color:"var(--text)",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
                               {day.title}
                               {attr&&<span style={{ fontSize:10,color:part.accent,border:`1px solid ${part.accent}44`,borderRadius:100,padding:"1px 8px",background:part.accentLight,fontWeight:600,cursor:"pointer" }} onClick={e=>{e.stopPropagation();setSelectedAttr(attr);}}>פרטים ↗</span>}
                               {editMode&&<button className="edit-btn" onClick={e=>{e.stopPropagation();setEditDay({partId:openPart,dayIdx:di,day});}}>✏️</button>}
                             </div>
-                            <div style={{ fontSize:12,color:"#86868b",lineHeight:1.6 }}>{day.desc}</div>
+                            <div style={{ fontSize:12,color:"var(--text-mute)",lineHeight:1.6 }}>{day.desc}</div>
                             {note&&<div style={{ marginTop:6,fontSize:12,color:"#B5500B",background:"#FFF5EE",border:"1px solid #FFCDD2",borderRadius:8,padding:"5px 10px" }}>📝 {note}</div>}
                             {editMode&&<button className="edit-btn" style={{ marginTop:6 }} onClick={e=>{e.stopPropagation();setAddNote({partId:openPart,dayIdx:di,note:notes[noteKey]||""});}}>📝 {note?"ערוך":"הוסף"} הערה</button>}
                           </div>
                         </div>
                       );
                     })}
-                    <div style={{ marginTop:12,padding:"10px 14px",background:"#f5f5f7",borderRadius:10,border:"1px solid #d2d2d7",display:"flex",gap:8,alignItems:"center" }}>
+                    <div style={{ marginTop:12,padding:"10px 14px",background:"var(--surface)",borderRadius:10,border:"1px solid var(--border)",display:"flex",gap:8,alignItems:"center" }}>
                       <span>🏨</span>
-                      <span style={{ fontSize:12,color:"#6e6e73",flex:1 }}>{part.hotel}</span>
+                      <span style={{ fontSize:12,color:"var(--text-sub)",flex:1 }}>{part.hotel}</span>
                       <span style={{ fontSize:11,color:"#386641",fontWeight:700 }}>סגור ✓</span>
                     </div>
                   </div>
@@ -788,30 +804,30 @@ export default function JapanTrip() {
         {/* ── CHECKLIST ── */}
         {tab==="checklist"&&(
           <div className="fade-up">
-            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid var(--border)",marginBottom:24 }}>
               <h2 className="section-heading">משימות ✅</h2>
               <p className="section-sub">הכנות לפני הטיסה – מעודכן לכל המשפחה בזמן אמת</p>
             </div>
-            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
+            <div style={{ background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
                 <span style={{ fontWeight:600,fontSize:15 }}>התקדמות</span>
-                <span style={{ fontSize:20,fontWeight:700,color:"#1d1d1f" }}>{done}/{checklist.length}</span>
+                <span style={{ fontSize:20,fontWeight:700,color:"var(--text)" }}>{done}/{checklist.length}</span>
               </div>
-              <div style={{ height:4,background:"#d2d2d7",borderRadius:4,overflow:"hidden" }}>
+              <div style={{ height:4,background:"var(--border)",borderRadius:4,overflow:"hidden" }}>
                 <div style={{ height:"100%",width:`${checklist.length?done/checklist.length*100:0}%`,background:"linear-gradient(90deg,#C8860A,#E8A020)",borderRadius:4,transition:"width 0.5s" }}/>
               </div>
-              <div style={{ marginTop:6,fontSize:12,color:"#86868b" }}>{done===checklist.length?"🎉 הכל מוכן לטיסה!":`נשארו ${checklist.length-done} משימות`}</div>
+              <div style={{ marginTop:6,fontSize:12,color:"var(--text-mute)" }}>{done===checklist.length?"🎉 הכל מוכן לטיסה!":`נשארו ${checklist.length-done} משימות`}</div>
             </div>
             {cats.map(cat=>(
               <div key={cat} style={{ marginBottom:16 }}>
-                <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
-                <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
+                <div style={{ fontSize:11,letterSpacing:2,color:"var(--text-mute)",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                <div style={{ background:"var(--bg)",borderRadius:12,overflow:"hidden",border:"1px solid var(--border)" }}>
                   {checklist.filter(i=>i.cat===cat).map(item=>(
                     <div key={item.id} className="check-row">
-                      <div onClick={()=>toggleCheck(item.id)} style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"#d2d2d7"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                      <div onClick={()=>toggleCheck(item.id)} style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"var(--border)"}`,background:item.done?"#386641":"var(--bg)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
                         {item.done&&"✓"}
                       </div>
-                      <div style={{ flex:1,fontSize:14,color:item.done?"#86868b":"#1d1d1f",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
+                      <div style={{ flex:1,fontSize:14,color:item.done?"var(--text-mute)":"var(--text)",textDecoration:item.done?"line-through":"none",cursor:"pointer" }} onClick={()=>toggleCheck(item.id)}>{item.text}</div>
                       {item.urgent&&!item.done&&<span className="chip chip-red">דחוף</span>}
                       {editMode&&<button className="edit-btn" onClick={()=>setEditCheck(item)}>✏️</button>}
                       {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>askConfirm(e,"למחוק משימה זו?",()=>deleteCheckItem(item.id))}>🗑️</button>}
@@ -825,57 +841,57 @@ export default function JapanTrip() {
                 + הוסף משימה חדשה
               </button>
             )}
-            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"var(--text-mute)",marginTop:16 }}>✦ הסימונים מתעדכנים לכל המשפחה בזמן אמת</div>
           </div>
         )}
 
         {/* ── RECOMMENDATIONS ── */}
         {tab==="recs"&&(
           <div className="fade-up">
-            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid var(--border)",marginBottom:24 }}>
               <h2 className="section-heading">המלצות ⭐</h2>
               <p className="section-sub">מסעדות, אטרקציות ועצות – אספו מכל המקורות</p>
             </div>
-            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"18px",marginBottom:14 }}>
+            <div style={{ background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,padding:"18px",marginBottom:14 }}>
               <div style={{ fontWeight:600,fontSize:15,marginBottom:4 }}>✨ הוסף המלצות בטקסט חופשי</div>
-              <div style={{ fontSize:12,color:"#86868b",marginBottom:12 }}>הדבק המלצה, טקסט מאינסטגרם, בלוג, או כל מקור – ה-AI יסדר אוטומטית</div>
+              <div style={{ fontSize:12,color:"var(--text-mute)",marginBottom:12 }}>הדבק המלצה, טקסט מאינסטגרם, בלוג, או כל מקור – ה-AI יסדר אוטומטית</div>
               <textarea value={aiInput} onChange={e=>setAiInput(e.target.value)}
                 placeholder={`לדוגמה:\n"חייבים לאכול ב-Ichiran Ramen באוסקה..."`}
-                rows={3} style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"10px 12px",fontSize:13,color:"#1d1d1f",outline:"none",resize:"vertical",fontFamily:"inherit",textAlign:"right",lineHeight:1.6,marginBottom:10 }}
+                rows={3} style={{ width:"100%",background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px",fontSize:13,color:"var(--text)",outline:"none",resize:"vertical",fontFamily:"inherit",textAlign:"right",lineHeight:1.6,marginBottom:10 }}
               />
-              <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"11px",background:aiLoading||!aiInput.trim()?"#e8e8ed":"#1d1d1f",border:"none",borderRadius:8,color:aiLoading||!aiInput.trim()?"#86868b":"#fff",fontWeight:600,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"inherit",transition:"all .2s" }}>
+              <button onClick={parseAndAddRec} disabled={aiLoading||!aiInput.trim()} style={{ width:"100%",padding:"11px",background:aiLoading||!aiInput.trim()?"var(--chip-bg)":"var(--text)",border:"none",borderRadius:8,color:aiLoading||!aiInput.trim()?"var(--text-mute)":"var(--bg)",fontWeight:600,fontSize:14,cursor:aiLoading||!aiInput.trim()?"default":"pointer",fontFamily:"inherit",transition:"all .2s" }}>
                 {aiLoading?"⏳ מסדר המלצות...":"✨ סדר והוסף להמלצות"}
               </button>
               {aiError&&<div style={{ marginTop:10,padding:"8px 12px",background:"#fff0f0",border:"1px solid #ffcdd2",borderRadius:8,color:"#C1121F",fontSize:12,textAlign:"right",wordBreak:"break-word",whiteSpace:"pre-wrap",direction:"ltr" }}>⚠️ {aiError}</div>}
             </div>
-            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"18px",marginBottom:24 }}>
+            <div style={{ background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,padding:"18px",marginBottom:24 }}>
               <div style={{ fontWeight:600,fontSize:15,marginBottom:4 }}>✍️ הוסף המלצה ידנית</div>
-              <div style={{ fontSize:12,color:"#86868b",marginBottom:12 }}>אם ה-AI לא זמין – הוסף ישירות</div>
-              <select value={manualRec.cat} onChange={e=>setManualRec({...manualRec,cat:e.target.value})} style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",fontFamily:"inherit" }}>
+              <div style={{ fontSize:12,color:"var(--text-mute)",marginBottom:12 }}>אם ה-AI לא זמין – הוסף ישירות</div>
+              <select value={manualRec.cat} onChange={e=>setManualRec({...manualRec,cat:e.target.value})} style={{ width:"100%",background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",fontFamily:"inherit",color:"var(--text)" }}>
                 <option>אטרקציות</option><option>מסעדות</option><option>קניות</option><option>לינה</option><option>טיפים כלליים</option>
               </select>
-              <input value={manualRec.title} onChange={e=>setManualRec({...manualRec,title:e.target.value})} placeholder="שם / כותרת" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
-              <input value={manualRec.desc} onChange={e=>setManualRec({...manualRec,desc:e.target.value})} placeholder="תיאור קצר (אופציונלי)" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
-              <input value={manualRec.loc} onChange={e=>setManualRec({...manualRec,loc:e.target.value})} placeholder="מיקום (אופציונלי)" style={{ width:"100%",background:"#fff",border:"1px solid #d2d2d7",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:10,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
-              <button onClick={addManualRec} disabled={!manualRec.title.trim()} style={{ width:"100%",padding:"11px",background:!manualRec.title.trim()?"#e8e8ed":"#1d1d1f",border:"none",borderRadius:8,color:!manualRec.title.trim()?"#86868b":"#fff",fontWeight:600,fontSize:14,cursor:!manualRec.title.trim()?"default":"pointer",fontFamily:"inherit" }}>
+              <input value={manualRec.title} onChange={e=>setManualRec({...manualRec,title:e.target.value})} placeholder="שם / כותרת" style={{ width:"100%",background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit",color:"var(--text)" }}/>
+              <input value={manualRec.desc} onChange={e=>setManualRec({...manualRec,desc:e.target.value})} placeholder="תיאור קצר (אופציונלי)" style={{ width:"100%",background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:8,outline:"none",textAlign:"right",fontFamily:"inherit",color:"var(--text)" }}/>
+              <input value={manualRec.loc} onChange={e=>setManualRec({...manualRec,loc:e.target.value})} placeholder="מיקום (אופציונלי)" style={{ width:"100%",background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"9px 12px",fontSize:13,marginBottom:10,outline:"none",textAlign:"right",fontFamily:"inherit",color:"var(--text)" }}/>
+              <button onClick={addManualRec} disabled={!manualRec.title.trim()} style={{ width:"100%",padding:"11px",background:!manualRec.title.trim()?"var(--chip-bg)":"var(--text)",border:"none",borderRadius:8,color:!manualRec.title.trim()?"var(--text-mute)":"var(--bg)",fontWeight:600,fontSize:14,cursor:!manualRec.title.trim()?"default":"pointer",fontFamily:"inherit" }}>
                 + הוסף המלצה
               </button>
             </div>
             {Object.keys(recs).length===0?(
-              <div style={{ textAlign:"center",color:"#86868b",padding:"40px 0",fontSize:14 }}>עדיין אין המלצות – הוסף מלמעלה!</div>
+              <div style={{ textAlign:"center",color:"var(--text-mute)",padding:"40px 0",fontSize:14 }}>עדיין אין המלצות – הוסף מלמעלה!</div>
             ):(
               [...new Set(Object.values(recs).map(r=>r.cat))].map(cat=>(
                 <div key={cat} style={{ marginBottom:16 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
-                  <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"var(--text-mute)",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                  <div style={{ background:"var(--bg)",borderRadius:12,overflow:"hidden",border:"1px solid var(--border)" }}>
                     {Object.values(recs).filter(r=>r.cat===cat).map(rec=>(
                       <div key={rec.id} className="check-row" onClick={()=>toggleRec(rec.id)}>
-                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${rec.done?"#386641":"#d2d2d7"}`,background:rec.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s" }}>
+                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${rec.done?"#386641":"var(--border)"}`,background:rec.done?"#386641":"var(--bg)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s" }}>
                           {rec.done&&"✓"}
                         </div>
                         <div style={{ flex:1 }}>
-                          <div style={{ fontWeight:600,fontSize:14,color:rec.done?"#86868b":"#1d1d1f",textDecoration:rec.done?"line-through":"none" }}>{rec.title}</div>
-                          {rec.desc&&<div style={{ fontSize:12,color:"#86868b",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
+                          <div style={{ fontWeight:600,fontSize:14,color:rec.done?"var(--text-mute)":"var(--text)",textDecoration:rec.done?"line-through":"none" }}>{rec.title}</div>
+                          {rec.desc&&<div style={{ fontSize:12,color:"var(--text-mute)",marginTop:2,lineHeight:1.5 }}>{rec.desc}</div>}
                           {rec.loc&&<div style={{ fontSize:11,color:"#C1121F",marginTop:2 }}>📍 {rec.loc}</div>}
                         </div>
                         {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0",flexShrink:0 }} onClick={e=>askConfirm(e,"למחוק המלצה זו?",()=>deleteRec(rec.id))}>🗑️</button>}
@@ -885,39 +901,39 @@ export default function JapanTrip() {
                 </div>
               ))
             )}
-            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ ההמלצות משותפות לכל המשפחה</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"var(--text-mute)",marginTop:16 }}>✦ ההמלצות משותפות לכל המשפחה</div>
           </div>
         )}
 
         {/* ── PACKING ── */}
         {tab==="packing"&&(
           <div className="fade-up">
-            <div style={{ padding:"36px 0 0",borderBottom:"1px solid #d2d2d7",marginBottom:24 }}>
+            <div style={{ padding:"36px 0 0",borderBottom:"1px solid var(--border)",marginBottom:24 }}>
               <h2 className="section-heading">מה להביא 🎒</h2>
               <p className="section-sub">רשימת ציוד לטיול – משותפת לכל המשפחה</p>
             </div>
-            <div style={{ background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
+            <div style={{ background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,padding:"16px 20px",marginBottom:24 }}>
               <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8 }}>
                 <span style={{ fontWeight:600,fontSize:15 }}>התקדמות</span>
                 <span style={{ fontSize:15,color:"#386641",fontWeight:700 }}>{Object.values(packing).filter(p=>p.done).length}/{Object.values(packing).length}</span>
               </div>
-              <div style={{ height:4,background:"#d2d2d7",borderRadius:4,overflow:"hidden" }}>
+              <div style={{ height:4,background:"var(--border)",borderRadius:4,overflow:"hidden" }}>
                 <div style={{ height:"100%",width:`${Object.values(packing).length?Object.values(packing).filter(p=>p.done).length/Object.values(packing).length*100:0}%`,background:"linear-gradient(90deg,#386641,#52B788)",borderRadius:4,transition:"width 0.5s" }}/>
               </div>
             </div>
             {Object.values(packing).length===0?(
-              <div style={{ textAlign:"center",color:"#86868b",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
+              <div style={{ textAlign:"center",color:"var(--text-mute)",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
             ):(
               [...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
                 <div key={cat} style={{ marginBottom:16 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#86868b",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
-                  <div style={{ background:"#fff",borderRadius:12,overflow:"hidden",border:"1px solid #d2d2d7" }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"var(--text-mute)",marginBottom:8,textTransform:"uppercase",fontWeight:600 }}>{cat}</div>
+                  <div style={{ background:"var(--bg)",borderRadius:12,overflow:"hidden",border:"1px solid var(--border)" }}>
                     {Object.values(packing).filter(p=>p.cat===cat).map(item=>(
                       <div key={item.id} className="check-row" onClick={()=>togglePacking(item.id)}>
-                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"#d2d2d7"}`,background:item.done?"#386641":"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
+                        <div style={{ width:20,height:20,borderRadius:6,flexShrink:0,border:`1.5px solid ${item.done?"#386641":"var(--border)"}`,background:item.done?"#386641":"var(--bg)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",transition:"all .2s",cursor:"pointer" }}>
                           {item.done&&"✓"}
                         </div>
-                        <div style={{ flex:1,fontSize:14,color:item.done?"#86868b":"#1d1d1f",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
+                        <div style={{ flex:1,fontSize:14,color:item.done?"var(--text-mute)":"var(--text)",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
                         {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>{e.stopPropagation();askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>}
                       </div>
                     ))}
@@ -928,7 +944,7 @@ export default function JapanTrip() {
             <button onClick={addPackingItem} style={{ width:"100%",padding:"12px",background:"#f0f7f0",border:"2px dashed #B7DFC0",borderRadius:12,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600,marginTop:8 }}>
               + הוסף פריט
             </button>
-            <div style={{ textAlign:"center",fontSize:12,color:"#86868b",marginTop:16 }}>✦ הרשימה משותפת לכל המשפחה</div>
+            <div style={{ textAlign:"center",fontSize:12,color:"var(--text-mute)",marginTop:16 }}>✦ הרשימה משותפת לכל המשפחה</div>
           </div>
         )}
       </main>
@@ -939,11 +955,11 @@ export default function JapanTrip() {
       {addNote&&<AddNoteModal {...addNote} onSave={t=>saveNote(addNote.partId,addNote.dayIdx,t)} onClose={()=>setAddNote(null)}/>}
       {confirmDlg&&(
         <div onClick={()=>setConfirmDlg(null)} style={{ position:"fixed",inset:0,zIndex:3000 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"#fff",border:"1px solid #d2d2d7",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.15)",fontFamily:"inherit" }}>
-            <div style={{ fontSize:13,color:"#1d1d1f",marginBottom:10,textAlign:"right" }}>{confirmDlg.message}</div>
+          <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"var(--bg)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.25)",fontFamily:"inherit" }}>
+            <div style={{ fontSize:13,color:"var(--text)",marginBottom:10,textAlign:"right" }}>{confirmDlg.message}</div>
             <div style={{ display:"flex",gap:8 }}>
               <button onClick={()=>{confirmDlg.onConfirm();setConfirmDlg(null);}} style={{ flex:1,padding:"7px",background:"#C1121F",border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>מחק</button>
-              <button onClick={()=>setConfirmDlg(null)} style={{ flex:1,padding:"7px",background:"#f5f5f7",border:"1px solid #d2d2d7",borderRadius:8,color:"#6e6e73",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
+              <button onClick={()=>setConfirmDlg(null)} style={{ flex:1,padding:"7px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,color:"var(--text-sub)",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
             </div>
           </div>
         </div>
