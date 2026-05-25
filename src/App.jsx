@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, update, remove } from "firebase/database";
 
@@ -726,78 +726,78 @@ export default function JapanTrip() {
               </div>
             </div>
 
-            {/* City cards grid */}
+            {/* City cards grid — detail panel renders inline after clicked card */}
             <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12,marginBottom:28 }}>
               {parts.map((part,pi)=>{
                 const isActive=openPart===pi;
                 return (
-                  <div key={pi} className={`city-card${isActive?" active":""}`}
-                    style={{ borderColor:isActive?part.accent:"var(--border)" }}
-                    onClick={()=>setOpenPart(isActive?null:pi)}>
-                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12 }}>
-                      <div style={{ width:46,height:46,borderRadius:12,background:part.accentLight,border:`1.5px solid ${part.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>
-                        {CITY_EMOJIS[pi]}
+                  <React.Fragment key={pi}>
+                    <div className={`city-card${isActive?" active":""}`}
+                      style={{ borderColor:isActive?part.accent:"var(--border)" }}
+                      onClick={()=>setOpenPart(isActive?null:pi)}>
+                      <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12 }}>
+                        <div style={{ width:46,height:46,borderRadius:12,background:part.accentLight,border:`1.5px solid ${part.accent}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22 }}>
+                          {CITY_EMOJIS[pi]}
+                        </div>
+                        <span style={{ fontSize:10,letterSpacing:2,color:part.accent,fontWeight:700,textTransform:"uppercase",marginTop:4 }}>{part.dates}</span>
                       </div>
-                      <span style={{ fontSize:10,letterSpacing:2,color:part.accent,fontWeight:700,textTransform:"uppercase",marginTop:4 }}>{part.dates}</span>
+                      <h3 style={{ fontSize:17,fontWeight:700,color:"var(--text)",marginBottom:4,letterSpacing:"-.3px" }}>{part.label}</h3>
+                      <p style={{ fontSize:13,color:"var(--text-sub)",marginBottom:14,lineHeight:1.5 }}>{part.sub}</p>
+                      <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
+                        <span className="chip" style={{ fontSize:11 }}>{part.days.length} ימים</span>
+                        <span className="chip" style={{ fontSize:11,color:isActive?part.accent:"var(--text-mute)",background:isActive?part.accentLight:"var(--chip-bg)" }}>{isActive?"▲ סגור":"▼ פרטים"}</span>
+                      </div>
                     </div>
-                    <h3 style={{ fontSize:17,fontWeight:700,color:"var(--text)",marginBottom:4,letterSpacing:"-.3px" }}>{part.label}</h3>
-                    <p style={{ fontSize:13,color:"var(--text-sub)",marginBottom:14,lineHeight:1.5 }}>{part.sub}</p>
-                    <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
-                      <span className="chip" style={{ fontSize:11 }}>{part.days.length} ימים</span>
-                      <span className="chip" style={{ fontSize:11,color:isActive?part.accent:"var(--text-mute)",background:isActive?part.accentLight:"var(--chip-bg)" }}>{isActive?"▲ סגור":"▼ פרטים"}</span>
-                    </div>
-                  </div>
+
+                    {isActive&&(
+                      <div className="fade-up"
+                        ref={el=>el&&setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"nearest"}),80)}
+                        style={{ gridColumn:"1 / -1",background:"var(--bg)",border:`1px solid ${part.accent}`,borderRadius:16,overflow:"hidden",boxShadow:`0 4px 24px ${part.accent}18` }}>
+                        <div style={{ padding:"18px 24px",borderBottom:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"space-between",background:part.accentLight }}>
+                          <div>
+                            <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",fontWeight:700,marginBottom:3 }}>{part.dates}</div>
+                            <h2 style={{ fontSize:22,fontWeight:700,color:"#1d1d1f",letterSpacing:"-.5px" }}>{part.label}</h2>
+                            <p style={{ fontSize:13,color:"#6e6e73",marginTop:2 }}>{part.sub}</p>
+                          </div>
+                          <span style={{ padding:"4px 12px",background:part.accent,color:"#fff",borderRadius:8,fontSize:12,fontWeight:700,flexShrink:0 }}>{part.days.length} ימים</span>
+                        </div>
+                        <div style={{ padding:"8px 24px 16px" }}>
+                          {part.days.map((day,di)=>{
+                            const attr=day.attrKey?ATTRACTIONS.find(a=>a.name===day.attrKey):null;
+                            const noteKey=`${pi}_${di}`;
+                            const note=notes[noteKey];
+                            const isFirstOfDate=di===0||part.days[di-1].date!==day.date;
+                            return (
+                              <div key={di} className="day-row" style={{ borderTop:isFirstOfDate&&di>0?"2px solid var(--surface)":undefined }}>
+                                <div style={{ flexShrink:0,width:44,textAlign:"center",paddingTop:2 }}>
+                                  <div style={{ fontSize:18 }}>{day.icon}</div>
+                                  <div style={{ fontSize:9,color:isFirstOfDate?"var(--text-mute)":"transparent",marginTop:2,fontWeight:600 }}>{day.date}</div>
+                                </div>
+                                <div style={{ flex:1 }}>
+                                  <div style={{ fontWeight:600,fontSize:14,color:"var(--text)",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
+                                    {day.title}
+                                    {attr&&<span style={{ fontSize:10,color:part.accent,border:`1px solid ${part.accent}44`,borderRadius:100,padding:"1px 8px",background:part.accentLight,fontWeight:600,cursor:"pointer" }} onClick={e=>{e.stopPropagation();setSelectedAttr(attr);}}>פרטים ↗</span>}
+                                    {editMode&&<button className="edit-btn" onClick={e=>{e.stopPropagation();setEditDay({partId:pi,dayIdx:di,day});}}>✏️</button>}
+                                  </div>
+                                  <div style={{ fontSize:12,color:"var(--text-mute)",lineHeight:1.6 }}>{day.desc}</div>
+                                  {note&&<div style={{ marginTop:6,fontSize:12,color:"#B5500B",background:"#FFF5EE",border:"1px solid #FFCDD2",borderRadius:8,padding:"5px 10px" }}>📝 {note}</div>}
+                                  {editMode&&<button className="edit-btn" style={{ marginTop:6 }} onClick={e=>{e.stopPropagation();setAddNote({partId:pi,dayIdx:di,note:notes[noteKey]||""});}}>📝 {note?"ערוך":"הוסף"} הערה</button>}
+                                </div>
+                              </div>
+                            );
+                          })}
+                          <div style={{ marginTop:12,padding:"10px 14px",background:"var(--surface)",borderRadius:10,border:"1px solid var(--border)",display:"flex",gap:8,alignItems:"center" }}>
+                            <span>🏨</span>
+                            <span style={{ fontSize:12,color:"var(--text-sub)",flex:1 }}>{part.hotel}</span>
+                            <span style={{ fontSize:11,color:"#386641",fontWeight:700 }}>סגור ✓</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
-
-            {/* Expanded detail */}
-            {openPart!==null&&(()=>{
-              const part=parts[openPart];
-              return (
-                <div className="fade-up" style={{ background:"var(--bg)",border:`1px solid ${part.accent}`,borderRadius:16,overflow:"hidden",marginBottom:24,boxShadow:`0 4px 24px ${part.accent}18` }}>
-                  <div style={{ padding:"18px 24px",borderBottom:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"space-between",background:part.accentLight }}>
-                    <div>
-                      <div style={{ fontSize:10,letterSpacing:3,color:part.accent,textTransform:"uppercase",fontWeight:700,marginBottom:3 }}>{part.dates}</div>
-                      <h2 style={{ fontSize:22,fontWeight:700,color:"#1d1d1f",letterSpacing:"-.5px" }}>{part.label}</h2>
-                      <p style={{ fontSize:13,color:"#6e6e73",marginTop:2 }}>{part.sub}</p>
-                    </div>
-                    <span style={{ padding:"4px 12px",background:part.accent,color:"#fff",borderRadius:8,fontSize:12,fontWeight:700,flexShrink:0 }}>{part.days.length} ימים</span>
-                  </div>
-                  <div style={{ padding:"8px 24px 16px" }}>
-                    {part.days.map((day,di)=>{
-                      const attr=day.attrKey?ATTRACTIONS.find(a=>a.name===day.attrKey):null;
-                      const noteKey=`${openPart}_${di}`;
-                      const note=notes[noteKey];
-                      const isFirstOfDate=di===0||part.days[di-1].date!==day.date;
-                      return (
-                        <div key={di} className="day-row" style={{ borderTop:isFirstOfDate&&di>0?"2px solid var(--surface)":undefined }}>
-                          <div style={{ flexShrink:0,width:44,textAlign:"center",paddingTop:2 }}>
-                            <div style={{ fontSize:18 }}>{day.icon}</div>
-                            <div style={{ fontSize:9,color:isFirstOfDate?"var(--text-mute)":"transparent",marginTop:2,fontWeight:600 }}>{day.date}</div>
-                          </div>
-                          <div style={{ flex:1 }}>
-                            <div style={{ fontWeight:600,fontSize:14,color:"var(--text)",marginBottom:2,display:"flex",alignItems:"center",gap:7,flexWrap:"wrap" }}>
-                              {day.title}
-                              {attr&&<span style={{ fontSize:10,color:part.accent,border:`1px solid ${part.accent}44`,borderRadius:100,padding:"1px 8px",background:part.accentLight,fontWeight:600,cursor:"pointer" }} onClick={e=>{e.stopPropagation();setSelectedAttr(attr);}}>פרטים ↗</span>}
-                              {editMode&&<button className="edit-btn" onClick={e=>{e.stopPropagation();setEditDay({partId:openPart,dayIdx:di,day});}}>✏️</button>}
-                            </div>
-                            <div style={{ fontSize:12,color:"var(--text-mute)",lineHeight:1.6 }}>{day.desc}</div>
-                            {note&&<div style={{ marginTop:6,fontSize:12,color:"#B5500B",background:"#FFF5EE",border:"1px solid #FFCDD2",borderRadius:8,padding:"5px 10px" }}>📝 {note}</div>}
-                            {editMode&&<button className="edit-btn" style={{ marginTop:6 }} onClick={e=>{e.stopPropagation();setAddNote({partId:openPart,dayIdx:di,note:notes[noteKey]||""});}}>📝 {note?"ערוך":"הוסף"} הערה</button>}
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <div style={{ marginTop:12,padding:"10px 14px",background:"var(--surface)",borderRadius:10,border:"1px solid var(--border)",display:"flex",gap:8,alignItems:"center" }}>
-                      <span>🏨</span>
-                      <span style={{ fontSize:12,color:"var(--text-sub)",flex:1 }}>{part.hotel}</span>
-                      <span style={{ fontSize:11,color:"#386641",fontWeight:700 }}>סגור ✓</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
           </div>
         )}
 
