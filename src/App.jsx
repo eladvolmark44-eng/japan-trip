@@ -88,6 +88,15 @@ const DEFAULT_CHECKLIST = [
   { id:"c12", cat:"🧳 לוגיסטיקה", text:"מסעדות מיוחדות – הזמנה חודשים מראש", urgent:false, done:false },
 ];
 
+const DEFAULT_PACKING_CATS = [
+  "📄 מסמכים",
+  "💴 כסף",
+  "📱 טכנולוגיה",
+  "👕 ביגוד",
+  "🧴 בריאות",
+  "🎒 שונות",
+];
+
 const DEFAULT_PACKING = [
   { id:"p1", cat:"📄 מסמכים", text:"דרכונים תקפים לכל המשפחה", done:false },
   { id:"p2", cat:"📄 מסמכים", text:"ביטוח נסיעות – הדפסה ודיגיטל", done:false },
@@ -462,6 +471,69 @@ function AddNoteModal({ partId, dayIdx, note, onSave, onClose }) {
   );
 }
 
+function EditPackingItemModal({ item, cats, onSave, onClose }) {
+  const [text, setText] = useState(item.text);
+  const [cat, setCat] = useState(item.cat);
+  return (
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg)",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.3)",fontFamily:"inherit" }}>
+        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"var(--text)" }}>✏️ עריכת פריט</div>
+        <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>שם הפריט</label>
+        <input value={text} onChange={e=>setText(e.target.value)} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,marginBottom:14,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+        <label style={{ fontSize:12,color:"var(--text-mute)",display:"block",marginBottom:4 }}>קטגוריה</label>
+        <select value={cat} onChange={e=>setCat(e.target.value)} style={{ width:"100%",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,marginBottom:20,outline:"none",fontFamily:"inherit" }}>
+          {cats.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+        <div style={{ display:"flex",gap:10 }}>
+          <button onClick={()=>onSave({...item,text,cat})} style={{ flex:1,padding:"12px",background:"#386641",border:"none",borderRadius:12,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>שמור</button>
+          <button onClick={onClose} style={{ flex:1,padding:"12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>ביטול</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ManageCatsModal({ cats, onAdd, onRename, onDelete, onClose }) {
+  const [newCat, setNewCat] = useState("");
+  const [editingIdx, setEditingIdx] = useState(null);
+  const [editingVal, setEditingVal] = useState("");
+
+  function startEdit(i) { setEditingIdx(i); setEditingVal(cats[i]); }
+  function commitEdit() { if(editingVal.trim()) onRename(editingIdx, editingVal.trim()); setEditingIdx(null); }
+
+  return (
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:2000,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px" }}>
+      <div onClick={e=>e.stopPropagation()} style={{ background:"var(--bg)",borderRadius:20,padding:24,width:"100%",maxWidth:420,boxShadow:"0 20px 60px rgba(0,0,0,0.3)",fontFamily:"inherit",maxHeight:"80vh",overflowY:"auto" }}>
+        <div style={{ fontSize:18,fontWeight:700,marginBottom:20,color:"var(--text)" }}>🏷️ ניהול קטגוריות</div>
+        <div style={{ display:"flex",flexDirection:"column",gap:8,marginBottom:20 }}>
+          {cats.map((c,i)=>(
+            <div key={i} style={{ display:"flex",alignItems:"center",gap:8,background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"8px 12px" }}>
+              {editingIdx===i ? (
+                <>
+                  <input autoFocus value={editingVal} onChange={e=>setEditingVal(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")commitEdit();if(e.key==="Escape")setEditingIdx(null);}} style={{ flex:1,background:"var(--input-bg)",border:"1px solid var(--border)",borderRadius:8,padding:"4px 8px",color:"var(--text)",fontSize:14,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+                  <button onClick={commitEdit} style={{ padding:"4px 10px",background:"#386641",border:"none",borderRadius:8,color:"#fff",fontSize:12,cursor:"pointer",fontFamily:"inherit",fontWeight:600 }}>✓</button>
+                  <button onClick={()=>setEditingIdx(null)} style={{ padding:"4px 10px",background:"var(--border)",border:"none",borderRadius:8,color:"var(--text-sub)",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>✕</button>
+                </>
+              ) : (
+                <>
+                  <span style={{ flex:1,fontSize:14,color:"var(--text)" }}>{c}</span>
+                  <button onClick={()=>startEdit(i)} style={{ padding:"4px 10px",background:"transparent",border:"1px solid var(--border)",borderRadius:8,color:"var(--text-sub)",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>עריכה</button>
+                  <button onClick={()=>onDelete(i)} style={{ padding:"4px 10px",background:"transparent",border:"1px solid #ffcdd2",borderRadius:8,color:"#C1121F",fontSize:12,cursor:"pointer",fontFamily:"inherit" }}>🗑️</button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={{ display:"flex",gap:8,marginBottom:20 }}>
+          <input value={newCat} onChange={e=>setNewCat(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newCat.trim()){onAdd(newCat.trim());setNewCat("");}}} placeholder="קטגוריה חדשה..." style={{ flex:1,background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,padding:"9px 12px",color:"var(--text)",fontSize:14,outline:"none",textAlign:"right",fontFamily:"inherit" }}/>
+          <button onClick={()=>{if(newCat.trim()){onAdd(newCat.trim());setNewCat("");}}} style={{ padding:"9px 16px",background:"#386641",border:"none",borderRadius:10,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>+ הוסף</button>
+        </div>
+        <button onClick={onClose} style={{ width:"100%",padding:"12px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>סגור</button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main App ──
 export default function JapanTrip() {
   const [tab, setTab] = useState("itinerary");
@@ -471,6 +543,9 @@ export default function JapanTrip() {
   const [notes, setNotes] = useState({});
   const [recs, setRecs] = useState({});
   const [packing, setPacking] = useState({});
+  const [packingCats, setPackingCats] = useState(DEFAULT_PACKING_CATS);
+  const [editPackingItem, setEditPackingItem] = useState(null);
+  const [showManageCats, setShowManageCats] = useState(false);
   const [editDay, setEditDay] = useState(null);
   const [editCheck, setEditCheck] = useState(null);
   const [addNote, setAddNote] = useState(null);
@@ -510,7 +585,8 @@ export default function JapanTrip() {
     const u3 = onValue(ref(db,"notes"), s=>{ setNotes(s.exists()?s.val():{}); });
     const u4 = onValue(ref(db,"recs"), s=>{ setRecs(s.exists()?s.val():{}); });
     const u5 = onValue(ref(db,"packing"), s=>{ setPacking(s.exists()?s.val():{}); });
-    return ()=>{ u1(); u2(); u3(); u4(); u5(); };
+    const u6 = onValue(ref(db,"packingCats"), s=>{ setPackingCats(s.exists()?s.val():DEFAULT_PACKING_CATS); });
+    return ()=>{ u1(); u2(); u3(); u4(); u5(); u6(); };
   },[]);
 
   useEffect(()=>{
@@ -521,6 +597,7 @@ export default function JapanTrip() {
         set(ref(db,"notes"), {});
         set(ref(db,"recs"), {});
         set(ref(db,"packing"), Object.fromEntries(DEFAULT_PACKING.map(i=>[i.id,i])));
+        set(ref(db,"packingCats"), DEFAULT_PACKING_CATS);
         set(ref(db,"initialized"), true);
       }
     },{ onlyOnce:true });
@@ -631,11 +708,38 @@ export default function JapanTrip() {
 
   async function addPackingItem() {
     const id = `p${Date.now()}`;
-    await set(ref(db,`packing/${id}`), { id, cat:"🧳 כללי", text:"פריט חדש", done:false });
+    const firstCat = packingCats[0] || "כללי";
+    const newItem = { id, cat: firstCat, text: "פריט חדש", done: false };
+    await set(ref(db,`packing/${id}`), newItem);
+    setEditPackingItem(newItem);
+  }
+
+  async function updatePackingItem(item) {
+    await update(ref(db,`packing/${item.id}`), { text: item.text, cat: item.cat });
   }
 
   async function deletePackingItem(id) {
     try { await remove(ref(db,`packing/${id}`)); } catch(e) { console.error(e); }
+  }
+
+  async function addPackingCat(name) {
+    const updated = [...packingCats, name];
+    await set(ref(db,"packingCats"), updated);
+  }
+
+  async function renamePackingCat(idx, newName) {
+    const oldName = packingCats[idx];
+    const updated = packingCats.map((c,i)=>i===idx?newName:c);
+    await set(ref(db,"packingCats"), updated);
+    // update all items that used the old category name
+    const updates = {};
+    Object.values(packing).forEach(item=>{ if(item.cat===oldName) updates[`packing/${item.id}/cat`]=newName; });
+    if(Object.keys(updates).length) await update(ref(db), updates);
+  }
+
+  async function deletePackingCat(idx) {
+    const updated = packingCats.filter((_,i)=>i!==idx);
+    await set(ref(db,"packingCats"), updated);
   }
 
   const done = checklist.filter(i=>i.done).length;
@@ -948,16 +1052,28 @@ export default function JapanTrip() {
                           {item.done&&"✓"}
                         </div>
                         <div style={{ flex:1,fontSize:14,color:item.done?"var(--text-mute)":"var(--text)",textDecoration:item.done?"line-through":"none" }}>{item.text}</div>
-                        {editMode&&<button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>{e.stopPropagation();askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>}
+                        {editMode&&(
+                          <>
+                            <button className="edit-btn" style={{ color:"#386641",borderColor:"#B7DFC0",background:"#f0f7f0" }} onClick={e=>{e.stopPropagation();setEditPackingItem(item);}}>✏️</button>
+                            <button className="edit-btn" style={{ color:"#C1121F",borderColor:"#ffcdd2",background:"#fff0f0" }} onClick={e=>{e.stopPropagation();askConfirm(e,"למחוק פריט זה?",()=>deletePackingItem(item.id));}}>🗑️</button>
+                          </>
+                        )}
                       </div>
                     ))}
                   </div>
                 </div>
               ))
             )}
-            <button onClick={addPackingItem} style={{ width:"100%",padding:"12px",background:"#f0f7f0",border:"2px dashed #B7DFC0",borderRadius:12,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600,marginTop:8 }}>
-              + הוסף פריט
-            </button>
+            <div style={{ display:"flex",gap:10,marginTop:8 }}>
+              <button onClick={addPackingItem} style={{ flex:1,padding:"12px",background:"#f0f7f0",border:"2px dashed #B7DFC0",borderRadius:12,color:"#386641",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600 }}>
+                + הוסף פריט
+              </button>
+              {editMode&&(
+                <button onClick={()=>setShowManageCats(true)} style={{ padding:"12px 16px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,color:"var(--text-sub)",fontSize:14,cursor:"pointer",fontFamily:"inherit",fontWeight:600,whiteSpace:"nowrap" }}>
+                  🏷️ קטגוריות
+                </button>
+              )}
+            </div>
             <div style={{ textAlign:"center",fontSize:12,color:"var(--text-mute)",marginTop:16 }}>✦ הרשימה משותפת לכל המשפחה</div>
           </div>
         )}
@@ -967,6 +1083,8 @@ export default function JapanTrip() {
       {editDay&&<EditDayModal {...editDay} onSave={d=>saveDay(editDay.partId,editDay.dayIdx,d)} onClose={()=>setEditDay(null)}/>}
       {editCheck&&<EditCheckModal item={editCheck} onSave={saveCheckItem} onClose={()=>setEditCheck(null)}/>}
       {addNote&&<AddNoteModal {...addNote} onSave={t=>saveNote(addNote.partId,addNote.dayIdx,t)} onClose={()=>setAddNote(null)}/>}
+      {editPackingItem&&<EditPackingItemModal item={editPackingItem} cats={packingCats} onSave={item=>{updatePackingItem(item);setEditPackingItem(null);}} onClose={()=>setEditPackingItem(null)}/>}
+      {showManageCats&&<ManageCatsModal cats={packingCats} onAdd={addPackingCat} onRename={renamePackingCat} onDelete={deletePackingCat} onClose={()=>setShowManageCats(false)}/>}
       {confirmDlg&&(
         <div onClick={()=>setConfirmDlg(null)} style={{ position:"fixed",inset:0,zIndex:3000 }}>
           <div onClick={e=>e.stopPropagation()} style={{ position:"absolute",left:confirmDlg.x,top:confirmDlg.y,width:220,background:"var(--bg)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 14px",boxShadow:"0 12px 36px rgba(0,0,0,0.25)",fontFamily:"inherit" }}>
