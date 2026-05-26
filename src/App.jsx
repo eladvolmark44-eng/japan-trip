@@ -569,8 +569,19 @@ export default function JapanTrip() {
     setSyncing(false);
   }
 
-      const clean = text.replace(/```json|```/g,"").trim();
-      const items = JSON.parse(clean);
+  async function parseAndAddRec() {
+    if(!aiInput.trim()) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const res = await fetch("/api/parse-recs", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ text: aiInput }),
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.detail ? `${data.error}: ${data.detail}` : (data.error || `HTTP ${res.status}`));
+      const items = data.items;
       if(!Array.isArray(items) || items.length===0) throw new Error("לא הצלחתי לזהות המלצות בטקסט");
       await saveRecs(items);
       setAiInput("");
