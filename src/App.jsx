@@ -569,32 +569,6 @@ export default function JapanTrip() {
     setSyncing(false);
   }
 
-  // FIX 1: Direct Anthropic API call instead of /api/parse-recs
-  async function parseAndAddRec() {
-    if(!aiInput.trim()) return;
-    setAiLoading(true);
-    setAiError("");
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 800,
-          system: "You are a Japan travel assistant. Parse the user's text and extract recommendations. Return ONLY a valid JSON array, no markdown, no explanation.",
-          messages: [{
-            role: "user",
-            content: `Extract recommendations from this text for a Japan trip.
-Return a JSON array only, like: [{"cat":"מסעדות","title":"Ichiran Ramen","desc":"ראמן סולו מדהים","loc":"אוסקה"}]
-Categories must be one of: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים
-
-Text: ${aiInput}`
-          }]
-        })
-      });
-      const data = await res.json();
-      if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-      const text = data.content?.[0]?.text || "";
       const clean = text.replace(/```json|```/g,"").trim();
       const items = JSON.parse(clean);
       if(!Array.isArray(items) || items.length===0) throw new Error("לא הצלחתי לזהות המלצות בטקסט");
