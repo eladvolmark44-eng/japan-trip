@@ -189,83 +189,83 @@ const ATTRACTIONS = [
   { name:"שירקאווה-גו", loc:"גיפו", emoji:"🏘️", day:"15.09", tags:["היסטוריה","טבע"], color:"#386641",
     mapsUrl:"https://www.google.com/maps/search/Shirakawa-go+Japan/@36.2567,136.9065,14z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+shirakawa-go+japan",
-    description:"כפר הורי עם בתי גאשו-צוקורי (גגות קש תלולים) – אתר מורשת עולמית של יונסקו. מרהיב במיוחד בחורף עם שלג.",
+    description:"כפר הורי עם בתי גאשו-צוקורי (גגות קש תלולים) – אתר מורשת עולמית של יונסקו.",
     highlights:["בתי גאשו-צוקורי – ארכיטקטורה ייחודית","Wada House – פנים מקורי פתוח לביקור","נוף מגבעת Shiroyama – המבט הכי יפה"],
     tips:["לבוא בשעות הבוקר לפני האוטובוסים","קיץ-סתיו – ירוק ועדיין יפה","להביא מטרייה – מזג אוויר משתנה"],
     hours:"כל שעות", price:"חינם לטיול / ¥300 בתים בתשלום", bestTime:"09:00–11:00", howToGet:"אוטובוס מטאקיאמה (50 דק׳)",
-    nearbyFood:["Doburoku Festival Restaurant – אורז מותסס מסורתי","Irori dining – ארוחה מסורתית על אש","Shirakawa-go Canteen – מנות מקומיות פשוטות"] },
+    nearbyFood:["Doburoku Festival Restaurant","Irori dining – ארוחה מסורתית על אש","Shirakawa-go Canteen"] },
   { name:"קנאזאווה", loc:"קנאזאווה", emoji:"🌸", day:"15.09", tags:["גן","תרבות"], color:"#386641",
     mapsUrl:"https://www.google.com/maps/search/Kenroku-en+Garden+Kanazawa/@36.5617,136.6626,15z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+kenrokuen+kanazawa",
-    description:"קנאזאווה מכונה 'קיוטו הקטנה' – גן קנרוקו-אן (אחד שלושת הגנים הגדולים ביפן), שוק אוכל, ורובע גיישות.",
+    description:"קנאזאווה מכונה 'קיוטו הקטנה' – גן קנרוקו-אן, שוק אוכל, ורובע גיישות.",
     highlights:["גן קנרוקו-אן – יפה בכל עונה","שוק אומי-צ׳ו – ים-הפירות הטרי ביותר","רובע Higashi Chaya – גיישות ובתי תה"],
     tips:["ערב – לטייל ברובע Higashi Chaya","גלידת מאצ׳ה – חובה בגן","כניסה לגן ¥320 בלבד"],
     hours:"07:00–18:00 (גן)", price:"¥320 גן", bestTime:"בוקר", howToGet:"אוטובוס מתחנת קנאזאווה (10 דק׳)",
-    nearbyFood:["Omicho Market – דגים ופירות ים טריים","Mugen – מסעדת סושי מקומית מומלצת","Kaga cuisine – מטבח אזורי ייחודי"] },
+    nearbyFood:["Omicho Market – דגים ופירות ים טריים","Mugen – מסעדת סושי מקומית","Kaga cuisine – מטבח אזורי"] },
   { name:"Kiyomizu-dera", loc:"קיוטו", emoji:"🏯", day:"17.09", tags:["מקדש","נוף"], color:"#6B2D8B",
     mapsUrl:"https://www.google.com/maps/search/Kiyomizudera+Temple+Kyoto/@34.9949,135.7851,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+kiyomizudera+kyoto",
-    description:"מקדש בודהיסטי מהמאה ה-8 בנוי על צלעות הר. הגזוזטרה העצומה בנויה ללא מסמר אחד. נוף פנורמי על קיוטו.",
-    highlights:["גזוזטרת עץ ענקית ללא מסמרים","Otowa Waterfall – שלושה זרמים לאריכות ימים, בריאות והצלחה","סמטאות Ninenzaka ו-Sannenzaka ממש לידה"],
+    description:"מקדש בודהיסטי מהמאה ה-8 בנוי על צלעות הר. הגזוזטרה העצומה בנויה ללא מסמר אחד.",
+    highlights:["גזוזטרת עץ ענקית ללא מסמרים","Otowa Waterfall – שלושה זרמים","סמטאות Ninenzaka ו-Sannenzaka ממש לידה"],
     tips:["להגיע ב-08:00 לפני ההמונים","חורף – השלג על הגזוזטרה מדהים","כניסה ¥500"],
     hours:"06:00–18:00", price:"¥500", bestTime:"08:00 בפתיחה", howToGet:"אוטובוס 100 מתחנת קיוטו (15 דק׳)",
-    nearbyFood:["Ninenzaka – חנויות מסורתיות וחטיפים","Kasagi-ya – חנות מוצ׳י עתיקה מ-1914","Okutan – טופו טוגן מסורתי"] },
+    nearbyFood:["Ninenzaka – חנויות מסורתיות","Kasagi-ya – חנות מוצ׳י מ-1914","Okutan – טופו טוגן מסורתי"] },
   { name:"Ninenzaka", loc:"קיוטו", emoji:"🪨", day:"17.09", tags:["היסטוריה","צילומים"], color:"#6B2D8B",
     mapsUrl:"https://www.google.com/maps/search/Ninenzaka+Sannenzaka+Kyoto/@34.9992,135.7820,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+ninenzaka+kyoto",
-    description:"שתי סמטאות אבן מהמאה ה-19 עם בתי תה, חנויות מסורתיות ואווירה יפנית קלאסית. המקום הכי מצולם בקיוטו.",
+    description:"שתי סמטאות אבן מהמאה ה-19 עם בתי תה, חנויות מסורתיות ואווירה יפנית קלאסית.",
     highlights:["ריצוף אבן ייחודי מהמאה ה-19","חנויות מסורתיות – קרמיקה, תה, מזכרות","נוף לגגות הרעפים של קיוטו"],
-    tips:["ערב – פנסי רחוב ואווירה קסומה","יש חנות Starbucks בבית עתיק בסגנון יפני","לבוש קימונו – פופולרי מאוד כאן"],
+    tips:["ערב – פנסי רחוב ואווירה קסומה","יש חנות Starbucks בבית עתיק","לבוש קימונו – פופולרי מאוד כאן"],
     hours:"כל שעות", price:"חינם", bestTime:"07:00–09:00 או אחרי 17:00", howToGet:"10 דקות הליכה ממקדש Kiyomizu-dera",
-    nearbyFood:["Kagizen Yoshifusa – wagashi מסורתי מ-1716","Tsujiri – מאצ׳ה לאטה ומנות תה","Yudofu Sagano – טופו מסורתי"] },
+    nearbyFood:["Kagizen Yoshifusa – wagashi מ-1716","Tsujiri – מאצ׳ה לאטה","Yudofu Sagano – טופו מסורתי"] },
   { name:"יער הבמבוק – ארשיאמה", loc:"קיוטו", emoji:"🎋", day:"18.09", tags:["טבע","צילומים"], color:"#386641",
     mapsUrl:"https://www.google.com/maps/search/Arashiyama+Bamboo+Grove/@35.0168,135.6717,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+arashiyama+kyoto",
-    description:"שביל 400 מטר בין עצי במבוק ענקיים. פארק קופים על גבעה, מקדש Tenryu-ji עם גן זן, גשר Togetsukyo.",
-    highlights:["יער הבמבוק – חינם 24/7","פארק קופים (Iwatayama) – 170 קופים וגבעת נוף","מקדש Tenryu-ji – גן זן יפהפה"],
-    tips:["לצאת לפני 08:00 – אחרי 09:00 עומס כבד","ערב: לטייל ברובע Gion","Yudofu – טופו מסורתי ספציאלטי של ארשיאמה"],
+    description:"שביל 400 מטר בין עצי במבוק ענקיים. פארק קופים על גבעה, מקדש Tenryu-ji, גשר Togetsukyo.",
+    highlights:["יער הבמבוק – חינם 24/7","פארק קופים (Iwatayama) – 170 קופים","מקדש Tenryu-ji – גן זן יפהפה"],
+    tips:["לצאת לפני 08:00 – אחרי 09:00 עומס כבד","ערב: לטייל ברובע Gion","Yudofu – טופו מסורתי"],
     hours:"כל שעות / 09:00–17:00 מקדש", price:"חינם / ¥500 מקדש / ¥600 פארק קופים", bestTime:"07:30–09:00", howToGet:"JR Sagano לתחנת Saga-Arashiyama",
-    nearbyFood:["Shigetsu – אוכל זן בתוך מקדש Tenryu-ji","Yoshida-ya – Yudofu מסורתי 200 שנה","Nishiki Market – שוק האוכל של קיוטו"] },
+    nearbyFood:["Shigetsu – אוכל זן במקדש","Yoshida-ya – Yudofu 200 שנה","Nishiki Market"] },
   { name:"רובע Gion", loc:"קיוטו", emoji:"🌙", day:"18.09", tags:["תרבות","ערב"], color:"#6B2D8B",
     mapsUrl:"https://www.google.com/maps/search/Gion+District+Kyoto/@35.0036,135.7752,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+gion+kyoto",
-    description:"רובע הגיישות המפורסם של קיוטו – בתי עץ ישנים, פנסים אדומים, ואפשרות לפגוש Maiko (גיישה מתמחה).",
-    highlights:["Hanamikoji Street – הרחוב הכי יפה בקיוטו","פגישת Maiko בערב – נדירה ואמיתית","Gion Corner – מופע אמנויות מסורתיות"],
+    description:"רובע הגיישות המפורסם של קיוטו – בתי עץ ישנים, פנסים אדומים, ואפשרות לפגוש Maiko.",
+    highlights:["Hanamikoji Street – הרחוב הכי יפה בקיוטו","פגישת Maiko בערב","Gion Corner – מופע אמנויות מסורתיות"],
     tips:["לבוא אחרי 18:00 – הפנסים נדלקים","לא לצלם Maiko ללא רשות","Gion Hatanaka – חוויית ryokan אותנטית"],
     hours:"כל שעות", price:"חינם לטיול", bestTime:"18:00–21:00", howToGet:"אוטובוס 206 מתחנת קיוטו",
-    nearbyFood:["Ippudo Ramen Gion – ראמן מפורסם","Gion Nanba – אוכל יפני מסורתי","Minokichi – מסעדה קיוטית קלאסית מ-1716"] },
+    nearbyFood:["Ippudo Ramen Gion","Gion Nanba – אוכל יפני מסורתי","Minokichi – מסעדה קיוטית מ-1716"] },
   { name:"מקדש הזהב – Kinkaku-ji", loc:"קיוטו", emoji:"✨", day:"19.09", tags:["מקדש","אייקוני"], color:"#B5500B",
     mapsUrl:"https://www.google.com/maps/search/Kinkakuji/@35.0394,135.7292,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+kinkakuji+kyoto",
-    description:"מקדש בודהיסטי מהמאה ה-14, מצופה זהב טהור ומשתקף בבריכה. אחד הסמלים המוכרים ביותר של יפן.",
-    highlights:["גן מרהיב סביב המקדש","Ryoan-ji – גן האבנים המפורסם 10 דק׳ הליכה","בחורף עם שלג – נוף מושלם"],
-    tips:["ביקור שעה-שעתיים","להגיע ב-09:00 לפני הקבוצות","לשלב עם Ryoan-ji ו-Ninnaji"],
+    description:"מקדש בודהיסטי מהמאה ה-14, מצופה זהב טהור ומשתקף בבריכה.",
+    highlights:["גן מרהיב סביב המקדש","Ryoan-ji – 10 דק׳ הליכה","בחורף עם שלג – נוף מושלם"],
+    tips:["ביקור שעה-שעתיים","להגיע ב-09:00 לפני הקבוצות","לשלב עם Ryoan-ji"],
     hours:"09:00–17:00", price:"¥500", bestTime:"09:00 פתיחה", howToGet:"אוטובוס 101/205 מתחנת קיוטו",
     nearbyFood:["Ippudo Ramen","Nishiki Market","Sarasa Nishijin – קפה בקרמיקה עתיקה"] },
   { name:"Ryoan-ji", loc:"קיוטו", emoji:"🪨", day:"19.09", tags:["מקדש","מדיטציה"], color:"#6B2D8B",
     mapsUrl:"https://www.google.com/maps/search/Ryoanji+Temple+Kyoto/@35.0345,135.7180,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+ryoanji+kyoto",
-    description:"מקדש זן עם גן האבנים המסתורי ביותר ביפן – 15 אבנים מסודרות בחצץ לבן. המשמעות נתונה לפרשנות אישית.",
-    highlights:["גן האבנים – לעולם לא רואים את כל 15 האבנות ממקום אחד","בריכת Kyoyochi – גן חיצוני מרהיב","אווירה שקטה ומדיטטיבית"],
-    tips:["לשבת ולהתבונן – לא רק לצלם","להגיע עם Kinkaku-ji – מרחק קצר","בוקר מוקדם – שקט ומיסטי"],
+    description:"מקדש זן עם גן האבנים המסתורי ביותר ביפן – 15 אבנים מסודרות בחצץ לבן.",
+    highlights:["גן האבנים – לעולם לא רואים את כל 15 ממקום אחד","בריכת Kyoyochi – גן חיצוני מרהיב","אווירה שקטה ומדיטטיבית"],
+    tips:["לשבת ולהתבונן – לא רק לצלם","להגיע עם Kinkaku-ji","בוקר מוקדם – שקט ומיסטי"],
     hours:"08:00–17:00", price:"¥600", bestTime:"08:00 בפתיחה", howToGet:"אוטובוס 59 מהמרכז",
-    nearbyFood:["Tosuiro – טופו יצירתי","Nishiki Market – 20 דק׳ נסיעה","Sarasa Nishijin – קפה עתיק"] },
+    nearbyFood:["Tosuiro – טופו יצירתי","Nishiki Market – 20 דק׳","Sarasa Nishijin"] },
   { name:"מוזיאון נינטנדו", loc:"Uji, קיוטו", emoji:"🎮", day:"20.09", tags:["ילדים","הגרלה"], color:"#C1121F",
     mapsUrl:"https://www.google.com/maps/search/Nintendo+Museum+Uji/@34.9308,135.7953,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+nintendo+museum+uji",
     description:"המוזיאון הרשמי של נינטנדו, נפתח 2024. כל קונסולה מ-1889, משחקים ענקיים אינטראקטיביים.",
-    highlights:["Mario ו-Zelda בגרסאות ענק פיזיות","כל קונסולה שיצאה אי פעם מ-Game & Watch ועד Switch","קפה עם אוכל בעיצוב נינטנדו"],
+    highlights:["Mario ו-Zelda בגרסאות ענק פיזיות","כל קונסולה שיצאה מ-Game & Watch ועד Switch","קפה עם אוכל בעיצוב נינטנדו"],
     tips:["הגרלה חובה – יוני 2026!","פתוח 10:00–18:00, סגור ג׳","5 דק׳ מתחנת Kintetsu Ogura"],
     hours:"10:00–18:00 (סגור ג׳)", price:"¥3,300 / ¥1,100 ילד", bestTime:"אחה״צ", howToGet:"Kintetsu Kyoto Line לתחנת Ogura",
-    nearbyFood:["Uji – מנות מאצ׳ה בכל מסעדה","Tsuen Tea – בית תה מ-1160","Byodoin Omotesando – רחוב חנויות"] },
+    nearbyFood:["Uji – מנות מאצ׳ה בכל מסעדה","Tsuen Tea – בית תה מ-1160","Byodoin Omotesando"] },
   { name:"Fushimi Inari", loc:"קיוטו", emoji:"⛩️", day:"20.09", tags:["מקדש","חינם"], color:"#C1121F",
     mapsUrl:"https://www.google.com/maps/search/Fushimi+Inari+Taisha/@34.9671,135.7727,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+fushimi+inari+kyoto",
-    description:"10,000 שערי טוריי כתומים עד פסגת הר אינארי. אחד האתרים הפופולריים ביפן.",
-    highlights:["טיפוס לפסגה – 2–3 שעות","תצפית נהדרת בחצי הדרך","צילום אייקוני בשערים הכתומים"],
+    description:"10,000 שערי טוריי כתומים עד פסגת הר אינארי.",
+    highlights:["טיפוס לפסגה – 2–3 שעות","תצפית נהדרת בחצי הדרך","צילום אייקוני"],
     tips:["לצאת ב-07:00","JR Inari ממש בכניסה","בגדים רגילים מספיק"],
     hours:"24/7", price:"חינם", bestTime:"07:00–09:00", howToGet:"JR Nara Line, תחנת Inari",
-    nearbyFood:["Inari Sando – רחוב אוכל לפני הכניסה","Fushimi Sake District – 40 מבשלות סאקה","Tofuku-ji – שוק מקומי"] },
+    nearbyFood:["Inari Sando – רחוב אוכל","Fushimi Sake District – סאקה","Tofuku-ji – שוק מקומי"] },
   { name:"נארה – צבאים חופשיים", loc:"נארה", emoji:"🦌", day:"20.09", tags:["ילדים","חינם"], color:"#386641",
     mapsUrl:"https://www.google.com/maps/search/Nara+Park/@34.6851,135.8048,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+nara+park",
@@ -277,44 +277,68 @@ const ATTRACTIONS = [
   { name:"טירת אוסקה", loc:"אוסקה", emoji:"🏯", day:"21.09", tags:["היסטוריה","נוף"], color:"#B5500B",
     mapsUrl:"https://www.google.com/maps/search/Osaka+Castle/@34.6873,135.5259,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+osaka+castle",
-    description:"טירת אוסקה המפורסמת מהמאה ה-16 עם פארק ענק סביבה. מוזיאון בפנים ונוף מרהיב מהקומה השמינית.",
+    description:"טירת אוסקה המפורסמת מהמאה ה-16. מוזיאון בפנים ונוף מרהיב מהקומה השמינית.",
     highlights:["נוף 360° על אוסקה מהקומה ה-8","פארק ענק עם עצי דובדבן","מוזיאון עם ציוד שריון מקורי"],
     tips:["הפארק חינם – הכניסה לטירה בתשלום","בוקר מוקדם – פחות עומס","ספטמבר – ירוק ויפה"],
     hours:"09:00–17:00", price:"¥600", bestTime:"09:00", howToGet:"Metro Tanimachi 4-chome Station",
-    nearbyFood:["Osaka Castle Park cafes","Dotonbori – 15 דק׳ נסיעה","Kuromon Market – שוק הטחינות של אוסקה"] },
+    nearbyFood:["Osaka Castle Park cafes","Dotonbori – 15 דק׳","Kuromon Market"] },
   { name:"דוטונבורי", loc:"אוסקה", emoji:"🌃", day:"21.09", tags:["אוכל","אווירה"], color:"#B5500B",
     mapsUrl:"https://www.google.com/maps/search/Dotonbori+Osaka/@34.6687,135.5013,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+dotonbori+osaka",
-    description:"לב הבידור של אוסקה – תעלה עם שלטי ניאון ענקיים, אוכל רחוב, מסעדות ובידור. 'מטבח יפן'.",
+    description:"לב הבידור של אוסקה – תעלה עם שלטי ניאון, אוכל רחוב, מסעדות ובידור.",
     highlights:["שלט Glico Man – הצילום האייקוני","Takoyaki ו-Okonomiyaki – אוכל רחוב מקומי","Shinsaibashi – קניות ליד"],
-    tips:["ערב – הניאון מדהים","לנסות Takoyaki מהמקומות המקוריים","Kuromon Ichiba Market – שוק בוקר מקומי"],
+    tips:["ערב – הניאון מדהים","לנסות Takoyaki מהמקומות המקוריים","Kuromon Ichiba Market – שוק בוקר"],
     hours:"כל שעות", price:"חינם לטיול", bestTime:"18:00–22:00", howToGet:"Metro Namba Station",
-    nearbyFood:["Ichimi-an – Takoyaki המקורי","Kani Doraku – סרטן מפורסם","Kushikatsu Daruma – קבב מטוגן אוסקאי"] },
+    nearbyFood:["Ichimi-an – Takoyaki המקורי","Kani Doraku – סרטן מפורסם","Kushikatsu Daruma"] },
   { name:"Universal Studios – Nintendo World", loc:"אוסקה", emoji:"🍄", day:"22–23.09", tags:["ילדים","חובה"], color:"#6B2D8B",
     mapsUrl:"https://www.google.com/maps/search/Universal+Studios+Japan/@34.6654,135.4323,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+universal+studios+japan",
-    description:"USJ עם Nintendo World המדהים – Mario Kart AR, Donkey Kong, Yoshi, Harry Potter ועוד.",
-    highlights:["Nintendo World – Mario Kart AR, Donkey Kong Mine Cart","Harry Potter – Hogsmeade ושוקולד צפפות","Hollywood Dream – רכבת הרים עם מוזיקה שבוחרים"],
+    description:"USJ עם Nintendo World – Mario Kart AR, Donkey Kong, Yoshi, Harry Potter ועוד.",
+    highlights:["Nintendo World – Mario Kart AR, Donkey Kong Mine Cart","Harry Potter – Hogsmeade","Hollywood Dream – רכבת הרים"],
     tips:["Express Pass – חובה!","Nintendo World – Timed Entry נפרד","להגיע בפתיחה ישר לנינטנדו"],
     hours:"09:00–21:00", price:"¥10,400 + Express Pass", bestTime:"פתיחה – נינטנדו ראשון", howToGet:"JR Yumesaki Line לתחנת Universal City",
     nearbyFood:["Butterbeer + Mario food בפארק","CityWalk Osaka בכניסה","Osaka Namba – 20 דק׳"] },
   { name:"אקווריום קאיוקאן", loc:"אוסקה", emoji:"🐠", day:"24.09", tags:["ילדים","טבע"], color:"#1A5276",
     mapsUrl:"https://www.google.com/maps/search/Osaka+Aquarium+Kaiyukan/@34.6546,135.4287,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+osaka+aquarium",
-    description:"אחד האקווריומים הגדולים בעולם עם לוויתן-כרישים, לטאות ים, ופינגווינים. 8 קומות של חוויה ימית.",
+    description:"אחד האקווריומים הגדולים בעולם עם לוויתן-כרישים, לטאות ים, ופינגווינים.",
     highlights:["לוויתן-כרישים – הדגים הגדולים בעולם","15 אזורי אוקיינוס שונים","נוף על מפרץ אוסקה"],
     tips:["להזמין מראש – תורים ארוכים","להגיע בפתיחה","הגלגל הפנורמי ליד – נוף נהדר"],
     hours:"10:00–20:00", price:"¥2,700 / ¥1,400 ילד", bestTime:"09:30 לפני הפתיחה", howToGet:"Metro Chuo Line לתחנת Osakako",
-    nearbyFood:["Tempozan Marketplace – קניון מסעדות","Naniwa Kuishinbo Yokocho – 30 מסעדות אוסקאיות","Kaiyukan Café בתוך האקווריום"] },
+    nearbyFood:["Tempozan Marketplace","Naniwa Kuishinbo Yokocho – 30 מסעדות","Kaiyukan Café"] },
   { name:"Jojo World", loc:"אוסקה", emoji:"🎭", day:"24.09", tags:["אנימה","חוויה"], color:"#B5500B",
     mapsUrl:"https://www.google.com/maps/search/Universal+Studios+Japan+Osaka/@34.6654,135.4323,16z",
     mapsNearby:"https://www.google.com/maps/search/restaurants+near+universal+studios+japan",
-    description:"אירוע מיוחד של JoJo's Bizarre Adventure ב-USJ – אינטראקציות עם דמויות, מרצ׳נדייז בלעדי וחוויות AR.",
-    highlights:["מפגש עם דמויות הסדרה","מרצ׳נדייז בלעדי שלא נמכר בשום מקום","פוטו ספוט עם ה-poses האייקוניים"],
+    description:"אירוע מיוחד של JoJo's Bizarre Adventure ב-USJ – אינטראקציות, מרצ׳נדייז בלעדי וחוויות AR.",
+    highlights:["מפגש עם דמויות הסדרה","מרצ׳נדייז בלעדי","פוטו ספוט עם ה-poses האייקוניים"],
     tips:["לבדוק תאריכי האירוע מראש","להגיע מוקדם – מרצ׳נדייז נגמר מהר","Express Pass אינו תקף לכאן"],
     hours:"09:00–21:00", price:"כלול בכרטיס USJ", bestTime:"פתיחה", howToGet:"JR Yumesaki Line לתחנת Universal City",
-    nearbyFood:["בתוך USJ – Butterbeer ועוד","CityWalk Osaka","Namba – 20 דק׳"] },
+    nearbyFood:["בתוך USJ","CityWalk Osaka","Namba – 20 דק׳"] },
 ];
+
+// ── Countdown Banner ──
+function CountdownBanner() {
+  const [timeLeft, setTimeLeft] = useState("");
+  useEffect(() => {
+    function calc() {
+      const target = new Date("2026-09-08T08:25:00+09:00");
+      const now = new Date();
+      const diff = target - now;
+      if (diff <= 0) { setTimeLeft("🎌 הטיול התחיל!"); return; }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      setTimeLeft(`🗓️ עוד ${days} ימים ו-${hours} שעות ליפן!`);
+    }
+    calc();
+    const t = setInterval(calc, 60000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div style={{ display:"inline-flex", alignItems:"center", padding:"5px 16px", borderRadius:100, background:"#fff0f0", border:"1.5px solid #C1121F", color:"#C1121F", fontSize:13, fontWeight:700, marginBottom:20 }}>
+      {timeLeft}
+    </div>
+  );
+}
 
 // ── Attraction Modal ──
 function AttractionModal({ attr, onClose }) {
@@ -458,13 +482,23 @@ export default function JapanTrip() {
   const [aiError, setAiError] = useState("");
   const [manualRec, setManualRec] = useState({ cat:"אטרקציות", title:"", desc:"", loc:"" });
   const [confirmDlg, setConfirmDlg] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+
+  // FIX 2: Dark mode persisted in localStorage
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem("darkMode") === "true"; } catch { return false; }
+  });
+
+  function toggleDarkMode() {
+    setDarkMode(prev => {
+      const next = !prev;
+      try { localStorage.setItem("darkMode", String(next)); } catch {}
+      return next;
+    });
+  }
 
   function askConfirm(e, message, onConfirm) {
     e.stopPropagation();
-    const POPUP_W = 220;
-    const POPUP_H = 110;
-    const PAD = 8;
+    const POPUP_W = 220, POPUP_H = 110, PAD = 8;
     const x = Math.min(Math.max(e.clientX - POPUP_W/2, PAD), window.innerWidth - POPUP_W - PAD);
     const y = Math.min(e.clientY + 12, window.innerHeight - POPUP_H - PAD);
     setConfirmDlg({ x, y, message, onConfirm });
@@ -530,30 +564,39 @@ export default function JapanTrip() {
   }
 
   async function deleteCheckItem(id) {
-    console.log("deleteCheckItem", id);
     setSyncing(true);
-    try {
-      await remove(ref(db,`checklist/${id}`));
-      console.log("deleteCheckItem ok", id);
-    } catch(e) {
-      console.error("deleteCheckItem failed", id, e);
-    }
+    try { await remove(ref(db,`checklist/${id}`)); } catch(e) { console.error(e); }
     setSyncing(false);
   }
 
+  // FIX 1: Direct Anthropic API call instead of /api/parse-recs
   async function parseAndAddRec() {
     if(!aiInput.trim()) return;
     setAiLoading(true);
     setAiError("");
     try {
-      const res = await fetch("/api/parse-recs", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ text: aiInput }),
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 800,
+          system: "You are a Japan travel assistant. Parse the user's text and extract recommendations. Return ONLY a valid JSON array, no markdown, no explanation.",
+          messages: [{
+            role: "user",
+            content: `Extract recommendations from this text for a Japan trip.
+Return a JSON array only, like: [{"cat":"מסעדות","title":"Ichiran Ramen","desc":"ראמן סולו מדהים","loc":"אוסקה"}]
+Categories must be one of: אטרקציות, מסעדות, קניות, לינה, טיפים כלליים
+
+Text: ${aiInput}`
+          }]
+        })
       });
       const data = await res.json();
-      if(!res.ok) throw new Error(data.detail ? `${data.error}: ${data.detail}` : (data.error || `HTTP ${res.status}`));
-      const items = data.items;
+      if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+      const text = data.content?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g,"").trim();
+      const items = JSON.parse(clean);
       if(!Array.isArray(items) || items.length===0) throw new Error("לא הצלחתי לזהות המלצות בטקסט");
       await saveRecs(items);
       setAiInput("");
@@ -578,12 +621,7 @@ export default function JapanTrip() {
   async function addManualRec() {
     const title = manualRec.title.trim();
     if(!title) return;
-    await saveRecs([{
-      cat: manualRec.cat,
-      title,
-      desc: manualRec.desc.trim(),
-      loc: manualRec.loc.trim(),
-    }]);
+    await saveRecs([{ cat:manualRec.cat, title, desc:manualRec.desc.trim(), loc:manualRec.loc.trim() }]);
     setManualRec({ cat:"אטרקציות", title:"", desc:"", loc:"" });
   }
 
@@ -608,23 +646,15 @@ export default function JapanTrip() {
 
   async function addPackingItem() {
     const id = `p${Date.now()}`;
-    const item = { id, cat:"🧳 כללי", text:"פריט חדש", done:false };
-    await set(ref(db,`packing/${id}`), item);
+    await set(ref(db,`packing/${id}`), { id, cat:"🧳 כללי", text:"פריט חדש", done:false });
   }
 
   async function deletePackingItem(id) {
-    console.log("deletePackingItem", id);
-    try {
-      await remove(ref(db,`packing/${id}`));
-      console.log("deletePackingItem ok", id);
-    } catch(e) {
-      console.error("deletePackingItem failed", id, e);
-    }
+    try { await remove(ref(db,`packing/${id}`)); } catch(e) { console.error(e); }
   }
 
   const done = checklist.filter(i=>i.done).length;
   const cats = [...new Set(checklist.map(i=>i.cat))];
-
   const CITY_EMOJIS = ["🗼","🗻","⛩️","🎢","✈️"];
 
   const cssVars = darkMode ? {
@@ -688,7 +718,7 @@ export default function JapanTrip() {
           ))}
         </nav>
         <div style={{ display:"flex",gap:6,marginRight:"auto",alignItems:"center" }}>
-          <button onClick={()=>setDarkMode(!darkMode)} style={{ width:32,height:32,borderRadius:8,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text-sub)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0 }}>
+          <button onClick={toggleDarkMode} style={{ width:32,height:32,borderRadius:8,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text-sub)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0 }}>
             {darkMode?"☀":"☾"}
           </button>
           <button onClick={()=>setEditMode(!editMode)} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
@@ -704,17 +734,17 @@ export default function JapanTrip() {
         {/* ── ITINERARY ── */}
         {tab==="itinerary"&&(
           <div className="fade-up">
-            {/* Hero */}
             <div style={{ textAlign:"center",padding:"52px 0 36px",borderBottom:"1px solid var(--border)",marginBottom:32 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#C1121F",textTransform:"uppercase",fontWeight:600,marginBottom:12 }}>ספטמבר 2026</div>
               <h1 style={{ fontSize:72,fontWeight:700,letterSpacing:-3,lineHeight:1,marginBottom:12,color:"var(--text)" }}>יפן</h1>
-              <p style={{ color:"var(--text-sub)",fontSize:15,marginBottom:20 }}>משפחת Jimenez · 8.9 – 29.9.2026</p>
+              <p style={{ color:"var(--text-sub)",fontSize:15,marginBottom:16 }}>משפחת Jimenez · 8.9 – 29.9.2026</p>
+              {/* FIX 3: Countdown banner */}
+              <CountdownBanner />
               <div style={{ display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:28 }}>
                 {["21 ימים","5 ערים","🎉 בר מצווה"].map(t=>(
                   <span key={t} className="chip chip-red" style={{ fontSize:13,padding:"4px 14px" }}>{t}</span>
                 ))}
               </div>
-              {/* Pipeline */}
               <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexWrap:"wrap" }}>
                 {parts.map((p,i)=>(
                   <span key={i} style={{ display:"inline-flex",alignItems:"center",gap:6 }}>
@@ -726,8 +756,7 @@ export default function JapanTrip() {
               </div>
             </div>
 
-            {/* City cards grid — detail panel renders inline after clicked card */}
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12,marginBottom:28 }}>
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(min(260px,100%),1fr))",gap:12,marginBottom:28 }}>
               {parts.map((part,pi)=>{
                 const isActive=openPart===pi;
                 return (
@@ -922,7 +951,7 @@ export default function JapanTrip() {
               </div>
             </div>
             {Object.values(packing).length===0?(
-              <div style={{ textAlign:"center",color:"var(--text-mute)",padding:"40px 0",fontSize:14 }}>הרשימה ריקה – לחץ ✏️ עריכה והוסף פריטים</div>
+              <div style={{ textAlign:"center",color:"var(--text-mute)",padding:"40px 0",fontSize:14 }}>הרשימה ריקה</div>
             ):(
               [...new Set(Object.values(packing).map(p=>p.cat))].map(cat=>(
                 <div key={cat} style={{ marginBottom:16 }}>
