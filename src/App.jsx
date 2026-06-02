@@ -1039,7 +1039,7 @@ export default function JapanTrip() {
           { flight:"LX 257", aircraft:"AIRBUS A220-300", dep:"04:50 תל אביב (TLV)", arr:"08:10 ציריך (ZRH)", duration:"4 שע׳ 20 דק׳", meal:"ארוחת בוקר" },
           { flight:"LX 160", aircraft:"BOEING 777-300ER", dep:"13:05 ציריך (ZRH)", arr:"09:10 טוקיו (NRT) +1", duration:"13 שע׳ 5 דק׳", meal:"ארוחה + ארוחת בוקר" },
         ]}
-        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"2 × 23 ק״ג (50 ליברות)" }}
+        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"10 × 23 ק״ג (2 לנוסע · 5 נוסעים)" }}
         accent="#C1121F"
       />
       <FlightCard
@@ -1051,7 +1051,7 @@ export default function JapanTrip() {
           { flight:"LX 161", aircraft:"BOEING 777-300ER", dep:"11:00 טוקיו (NRT)", arr:"18:25 ציריך (ZRH)", duration:"14 שע׳ 25 דק׳", meal:"ארוחה + חטיף/ברנץ׳" },
           { flight:"LX 256", aircraft:"AIRBUS A220-300", dep:"22:40 ציריך (ZRH)", arr:"03:35 תל אביב (TLV) +1", duration:"3 שע׳ 55 דק׳", meal:"ארוחה" },
         ]}
-        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"2 × 23 ק״ג (50 ליברות)" }}
+        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"10 × 23 ק״ג (2 לנוסע · 5 נוסעים)" }}
         accent="#1A5276"
       />
     </div>
