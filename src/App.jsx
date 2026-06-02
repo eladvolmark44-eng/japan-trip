@@ -534,6 +534,104 @@ function ManageCatsModal({ cats, onAdd, onRename, onDelete, onClose }) {
   );
 }
 
+function SwissLogo({ size = 28 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="6" fill="#D40000"/>
+      <rect x="12" y="6" width="4" height="16" rx="1" fill="white"/>
+      <rect x="6" y="11" width="16" height="4" rx="1" fill="white"/>
+    </svg>
+  );
+}
+
+function FlightLeg({ flight, aircraft, dep, arr, duration, meal, accent }) {
+  return (
+    <div style={{ background:"var(--surface)", border:"1px solid var(--border)", borderRadius:12, padding:"12px 16px", marginBottom:8 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+        <span style={{ fontSize:14, fontWeight:700, color:accent }}>{flight}</span>
+        <span style={{ fontSize:11, color:"var(--text-mute)", background:"var(--bg)", border:"1px solid var(--border)", borderRadius:6, padding:"2px 8px" }}>{aircraft}</span>
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, fontSize:12, color:"var(--text-sub)" }}>
+        <span>🛫 {dep}</span><span>🛬 {arr}</span>
+        <span>⏱ {duration}</span><span>🍽 {meal}</span>
+      </div>
+    </div>
+  );
+}
+
+function FlightCard({ dir, date, fromCode, fromName, fromTerminal, fromTime, toCode, toName, toTerminal, toTime, plusDay, duration, stopAirport, stopDuration, legs, fare, accent }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div style={{ marginBottom:24, border:`1px solid ${accent}44`, borderRadius:16, overflow:"hidden", background:"var(--bg)" }}>
+      <div style={{ background:accent, padding:"14px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:8 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <SwissLogo size={32}/>
+          <div>
+            <div style={{ color:"white", fontSize:14, fontWeight:700 }}>{dir}</div>
+            <div style={{ color:"rgba(255,255,255,0.75)", fontSize:11, marginTop:2 }}>Swiss International Air Lines · {date}</div>
+          </div>
+        </div>
+        <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+          <span style={{ fontSize:11, padding:"3px 10px", borderRadius:100, background:"rgba(255,255,255,0.15)", color:"white", border:"1px solid rgba(255,255,255,0.3)", fontWeight:600 }}>{fare.class}</span>
+          <span style={{ fontSize:11, padding:"3px 10px", borderRadius:100, background:"rgba(255,255,255,0.95)", color:accent, fontWeight:700 }}>✓ מאושר</span>
+        </div>
+      </div>
+      <div style={{ padding:"18px 24px", display:"flex", alignItems:"center", gap:14, borderBottom:"1px solid var(--border)" }}>
+        <div style={{ textAlign:"right" }}>
+          <div style={{ fontSize:30, fontWeight:700, letterSpacing:-1, color:"var(--text)" }}>{fromTime}</div>
+          <div style={{ fontSize:15, fontWeight:700, color:"var(--text)" }}>{fromCode}</div>
+          <div style={{ fontSize:11, color:"var(--text-mute)" }}>{fromName}</div>
+          <div style={{ fontSize:11, color:"var(--text-mute)" }}>{fromTerminal}</div>
+        </div>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:5 }}>
+          <div style={{ fontSize:11, color:"var(--text-mute)", fontWeight:600 }}>{duration}</div>
+          <div style={{ width:"100%", display:"flex", alignItems:"center" }}>
+            <div style={{ flex:4, height:2, background:`${accent}66` }}/>
+            <div style={{ width:10, height:10, borderRadius:"50%", background:accent, flexShrink:0 }}/>
+            <div style={{ flex:1, height:0, borderTop:`2px dashed ${accent}66` }}/>
+            <div style={{ width:10, height:10, borderRadius:"50%", background:"var(--border)", flexShrink:0 }}/>
+            <div style={{ flex:1, height:2, background:`${accent}66` }}/>
+          </div>
+          <div style={{ fontSize:11, color:accent, fontWeight:700 }}>עצירה ב-{stopAirport} · {stopDuration}</div>
+        </div>
+        <div style={{ textAlign:"left" }}>
+          <div style={{ fontSize:30, fontWeight:700, letterSpacing:-1, color:"var(--text)" }}>{toTime}</div>
+          {plusDay && <div style={{ fontSize:11, color:"var(--text-mute)" }}>+יום</div>}
+          <div style={{ fontSize:15, fontWeight:700, color:"var(--text)" }}>{toCode}</div>
+          <div style={{ fontSize:11, color:"var(--text-mute)" }}>{toName}</div>
+          <div style={{ fontSize:11, color:"var(--text-mute)" }}>{toTerminal}</div>
+        </div>
+      </div>
+      {open && (
+        <div style={{ padding:"16px 20px 20px" }}>
+          <div style={{ fontSize:11, letterSpacing:2, color:"var(--text-mute)", textTransform:"uppercase", marginBottom:10 }}>פירוט טיסות</div>
+          {legs.map((leg,i) => (
+            <React.Fragment key={i}>
+              <FlightLeg {...leg} accent={accent}/>
+              {i < legs.length-1 && (
+                <div style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 12px", background:"var(--surface)", borderRadius:10, marginBottom:8, fontSize:12, color:"var(--text-mute)" }}>
+                  <span>⏳</span><span>המתנה ב-{stopAirport} · <strong style={{ color:"var(--text)" }}>{stopDuration}</strong></span>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12 }}>
+            {[["🔄","שינוי כרטיס",fare.rebooking],["💰","ביטול / החזר",fare.refund],["🎒","כבודת יד",fare.carryOn],["🧳","כבודה רשומה",fare.checked]].map(([ic,label,val])=>(
+              <div key={label} style={{ background:"var(--surface)", border:"1px solid var(--border)", borderRadius:10, padding:"10px 12px" }}>
+                <div style={{ fontSize:10, color:"var(--text-mute)", marginBottom:3 }}>{ic} {label}</div>
+                <div style={{ fontSize:12, color:"var(--text-sub)", lineHeight:1.5 }}>{val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      <button onClick={()=>setOpen(!open)} style={{ width:"100%", padding:"10px", background:"transparent", border:"none", borderTop:"1px solid var(--border)", cursor:"pointer", fontSize:13, color:"var(--text-sub)", fontFamily:"inherit", fontWeight:600 }}>
+        {open ? "▲ הסתר פרטים" : "▼ פרטי טיסות ומזוודות"}
+      </button>
+    </div>
+  );
+}
+
 // ── Main App ──
 export default function JapanTrip() {
   const [tab, setTab] = useState("itinerary");
@@ -799,6 +897,7 @@ export default function JapanTrip() {
         <nav style={{ display:"flex",gap:2,margin:"0 auto" }}>
           {[
             {id:"itinerary",label:"לוז"},
+            {id:"flights", label:"✈️ טיסות"},
             {id:"checklist",label:`משימות ${done}/${checklist.length}`},
             {id:"recs",label:"המלצות"},
             {id:"packing",label:"ציוד"},
@@ -918,6 +1017,46 @@ export default function JapanTrip() {
             </div>
           </div>
         )}
+
+        {tab==="flights"&&(
+  <div className="fade-up">
+    <div style={{ padding:"36px 0 0", borderBottom:"1px solid var(--border)", marginBottom:28 }}>
+      <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:6 }}>
+        <SwissLogo size={40}/>
+        <div>
+          <h2 className="section-heading" style={{ marginBottom:2 }}>טיסות ✈️</h2>
+          <p className="section-sub" style={{ marginBottom:0 }}>Swiss International Air Lines · Economy Basic Plus · 2 כרטיסים מאושרים</p>
+        </div>
+      </div>
+    </div>
+    <div style={{ marginTop:24 }}>
+      <FlightCard
+        dir="טיסת הלוך" date="שני, 7 ספטמבר 2026"
+        fromCode="TLV" fromName="תל אביב יפו" fromTerminal="טרמינל 3" fromTime="04:50"
+        toCode="NRT" toName="טוקיו נריטה" toTerminal="טרמינל 1" toTime="09:10" plusDay
+        duration="22 שעות 20 דקות" stopAirport="ZRH" stopDuration="4:55"
+        legs={[
+          { flight:"LX 257", aircraft:"AIRBUS A220-300", dep:"04:50 תל אביב (TLV)", arr:"08:10 ציריך (ZRH)", duration:"4 שע׳ 20 דק׳", meal:"ארוחת בוקר" },
+          { flight:"LX 160", aircraft:"BOEING 777-300ER", dep:"13:05 ציריך (ZRH)", arr:"09:10 טוקיו (NRT) +1", duration:"13 שע׳ 5 דק׳", meal:"ארוחה + ארוחת בוקר" },
+        ]}
+        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"2 × 23 ק״ג (50 ליברות)" }}
+        accent="#C1121F"
+      />
+      <FlightCard
+        dir="טיסת חזור" date="שלישי, 29 ספטמבר 2026"
+        fromCode="NRT" fromName="טוקיו נריטה" fromTerminal="טרמינל 1" fromTime="11:00"
+        toCode="TLV" toName="תל אביב יפו" toTerminal="טרמינל 3" toTime="03:35" plusDay
+        duration="22 שעות 35 דקות" stopAirport="ZRH" stopDuration="4:15"
+        legs={[
+          { flight:"LX 161", aircraft:"BOEING 777-300ER", dep:"11:00 טוקיו (NRT)", arr:"18:25 ציריך (ZRH)", duration:"14 שע׳ 25 דק׳", meal:"ארוחה + חטיף/ברנץ׳" },
+          { flight:"LX 256", aircraft:"AIRBUS A220-300", dep:"22:40 ציריך (ZRH)", arr:"03:35 תל אביב (TLV) +1", duration:"3 שע׳ 55 דק׳", meal:"ארוחה" },
+        ]}
+        fare={{ class:"Economy Basic Plus", rebooking:"עד $150 + הפרש תעריף", refund:"החזר מלא חוץ מ-$240", carryOn:"1 × 8 ק״ג · 55×40×23 ס״מ", checked:"2 × 23 ק״ג (50 ליברות)" }}
+        accent="#1A5276"
+      />
+    </div>
+  </div>
+)}
 
         {/* ── CHECKLIST ── */}
         {tab==="checklist"&&(
