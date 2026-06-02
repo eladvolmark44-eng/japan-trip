@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, update, remove } from "firebase/database";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRAFg_hm5vdIQPI9S1Qj_wAdsMIIyzxuc",
@@ -14,6 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
 
 const DEFAULT_PARTS = [
   { id:0, label:"טוקיו", sub:"נחיתה ודיסני", dates:"8–13.9", accent:"#C1121F", accentLight:"#FFF5F5",
@@ -632,6 +634,47 @@ function FlightCard({ dir, date, fromCode, fromName, fromTerminal, fromTime, toC
   );
 }
 
+// ── Login Modal ──
+function LoginModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      onClose();
+    } catch {
+      setError("אימייל או סיסמה שגויים");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:9999 }} onClick={onClose}>
+      <div style={{ background:"var(--bg)",borderRadius:16,padding:"28px 32px",width:300,boxShadow:"0 8px 32px rgba(0,0,0,0.2)" }} onClick={e=>e.stopPropagation()}>
+        <h3 style={{ margin:"0 0 20px",textAlign:"center",color:"var(--text)",fontSize:18 }}>כניסת מנהל</h3>
+        <form onSubmit={handleLogin} style={{ display:"flex",flexDirection:"column",gap:12 }}>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="אימייל" required
+            style={{ padding:"10px 14px",borderRadius:10,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text)",fontSize:14,outline:"none",fontFamily:"inherit",textAlign:"right" }}/>
+          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="סיסמה" required
+            style={{ padding:"10px 14px",borderRadius:10,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text)",fontSize:14,outline:"none",fontFamily:"inherit",textAlign:"right" }}/>
+          {error && <span style={{ color:"#C1121F",fontSize:13,textAlign:"center" }}>{error}</span>}
+          <button type="submit" disabled={loading}
+            style={{ padding:"11px",background:"#C1121F",border:"none",borderRadius:10,color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:"inherit" }}>
+            {loading ? "נכנס…" : "כניסה"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ── Main App ──
 export default function JapanTrip() {
   const [tab, setTab] = useState("itinerary");
@@ -650,6 +693,8 @@ export default function JapanTrip() {
   const [selectedAttr, setSelectedAttr] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
@@ -676,6 +721,8 @@ export default function JapanTrip() {
     const y = Math.min(e.clientY + 12, window.innerHeight - POPUP_H - PAD);
     setConfirmDlg({ x, y, message, onConfirm });
   }
+
+  useEffect(()=>{ return onAuthStateChanged(auth, u => { setUser(u); if(!u) setEditMode(false); }); },[]);
 
   useEffect(()=>{
     const u1 = onValue(ref(db,"parts"), s=>{ setParts(s.exists()?s.val():DEFAULT_PARTS); });
@@ -909,9 +956,10 @@ export default function JapanTrip() {
           <button onClick={toggleDarkMode} style={{ width:32,height:32,borderRadius:8,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text-sub)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0 }}>
             {darkMode?"☀":"☾"}
           </button>
-          <button onClick={()=>setEditMode(!editMode)} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
+          <button onClick={()=>{ if(user) setEditMode(!editMode); else setShowLogin(true); }} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
             {editMode?"סיום ✓":"✏️"}
           </button>
+          {user && editMode && <button onClick={()=>signOut(auth)} style={{ padding:"5px 10px",border:"1px solid var(--border)",background:"transparent",color:"var(--text-mute)",borderRadius:8,fontSize:11,cursor:"pointer",fontFamily:"inherit" }}>יציאה</button>}
           {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite" }}>שומר…</span>}
         </div>
       </header>
@@ -1235,6 +1283,7 @@ export default function JapanTrip() {
           </div>
         </div>
       )}
+      {showLogin&&<LoginModal onClose={()=>setShowLogin(false)}/>}
     </div>
   );
 }
