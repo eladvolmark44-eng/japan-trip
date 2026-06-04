@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, set, update, remove } from "firebase/database";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCRAFg_hm5vdIQPI9S1Qj_wAdsMIIyzxuc",
@@ -722,72 +722,79 @@ export default function JapanTrip() {
     setConfirmDlg({ x, y, message, onConfirm });
   }
 
-  useEffect(()=>{ return onAuthStateChanged(auth, u => { setUser(u); if(!u) setEditMode(false); }); },[]);
+  useEffect(()=>{ return onAuthStateChanged(auth, u => { setUser(u); if(!u) signInAnonymously(auth); if(u&&u.isAnonymous) setEditMode(false); }); },[]);
 
   useEffect(()=>{
-    const u1 = onValue(ref(db,"parts"), s=>{ setParts(s.exists()?s.val():DEFAULT_PARTS); });
-    const u2 = onValue(ref(db,"checklist"), s=>{ setChecklist(s.exists()?Object.values(s.val()):[]); });
-    const u3 = onValue(ref(db,"notes"), s=>{ setNotes(s.exists()?s.val():{}); });
-    const u4 = onValue(ref(db,"recs"), s=>{ setRecs(s.exists()?s.val():{}); });
-    const u5 = onValue(ref(db,"packing"), s=>{ setPacking(s.exists()?s.val():{}); });
-    const u6 = onValue(ref(db,"packingCats"), s=>{ setPackingCats(s.exists()?s.val():DEFAULT_PACKING_CATS); });
+    if(!user) return;
+    const u1 = onValue(ref(db, "parts"), s=>{ setParts(s.exists()?s.val():DEFAULT_PARTS); });
+    const u2 = onValue(ref(db, "checklist"), s=>{ setChecklist(s.exists()?Object.values(s.val()):[]); });
+    const u3 = onValue(ref(db, "notes"), s=>{ setNotes(s.exists()?s.val():{}); });
+    const u4 = onValue(ref(db, "recs"), s=>{ setRecs(s.exists()?s.val():{}); });
+    const u5 = onValue(ref(db, "packing"), s=>{ setPacking(s.exists()?s.val():{}); });
+    const u6 = onValue(ref(db, "packingCats"), s=>{ setPackingCats(s.exists()?s.val():DEFAULT_PACKING_CATS); });
     return ()=>{ u1(); u2(); u3(); u4(); u5(); u6(); };
-  },[]);
+  },[user]);
 
   useEffect(()=>{
-    onValue(ref(db,"initialized"), s=>{
+    if(!user) return;
+    onValue(ref(db, "initialized"), s=>{
       if(!s.exists()){
-        set(ref(db,"parts"), DEFAULT_PARTS);
-        set(ref(db,"checklist"), Object.fromEntries(DEFAULT_CHECKLIST.map(i=>[i.id,i])));
-        set(ref(db,"notes"), {});
-        set(ref(db,"recs"), {});
-        set(ref(db,"packing"), Object.fromEntries(DEFAULT_PACKING.map(i=>[i.id,i])));
-        set(ref(db,"packingCats"), DEFAULT_PACKING_CATS);
-        set(ref(db,"initialized"), true);
+        set(ref(db, "parts"), DEFAULT_PARTS);
+        set(ref(db, "checklist"), Object.fromEntries(DEFAULT_CHECKLIST.map(i=>[i.id,i])));
+        set(ref(db, "notes"), {});
+        set(ref(db, "recs"), {});
+        set(ref(db, "packing"), Object.fromEntries(DEFAULT_PACKING.map(i=>[i.id,i])));
+        set(ref(db, "packingCats"), DEFAULT_PACKING_CATS);
+        set(ref(db, "initialized"), true);
       }
     },{ onlyOnce:true });
-  },[]);
+  },[user]);
 
   async function saveDay(partId, dayIdx, updatedDay) {
+    if(!user || user.isAnonymous) return;
     setSyncing(true);
     const newParts = parts.map((p,pi)=> pi===partId ? {...p, days:p.days.map((d,di)=> di===dayIdx ? updatedDay : d)} : p);
-    await set(ref(db,"parts"), newParts);
+    await set(ref(db, "parts"), newParts);
     setSyncing(false); setEditDay(null);
   }
 
   async function saveNote(partId, dayIdx, text) {
+    if(!user || user.isAnonymous) return;
     setSyncing(true);
-    await update(ref(db,"notes"), { [`${partId}_${dayIdx}`]: text });
+    await update(ref(db, "notes"), { [`${partId}_${dayIdx}`]: text });
     setSyncing(false); setAddNote(null);
   }
 
   async function toggleCheck(id) {
-    if(!id) return;
+    if(!id || !user || user.isAnonymous) return;
     const item = checklist.find(i=>i.id===id);
     if(!item) return;
     setSyncing(true);
-    await update(ref(db,`checklist/${id}`), { done: !item.done });
+    await update(ref(db, `checklist/${id}`), { done: !item.done });
     setSyncing(false);
   }
 
   async function saveCheckItem(updated) {
+    if(!user || user.isAnonymous) return;
     setSyncing(true);
-    await update(ref(db,`checklist/${updated.id}`), updated);
+    await update(ref(db, `checklist/${updated.id}`), updated);
     setSyncing(false); setEditCheck(null);
   }
 
   async function addCheckItem() {
+    if(!user || user.isAnonymous) return;
     const id = `c${Date.now()}`;
     const item = { id, cat:"🧳 לוגיסטיקה", text:"משימה חדשה", urgent:false, done:false };
     setSyncing(true);
-    await set(ref(db,`checklist/${id}`), item);
+    await set(ref(db, `checklist/${id}`), item);
     setSyncing(false);
     setEditCheck(item);
   }
 
   async function deleteCheckItem(id) {
+    if(!user || user.isAnonymous) return;
     setSyncing(true);
-    try { await remove(ref(db,`checklist/${id}`)); } catch(e) { console.error(e); }
+    try { await remove(ref(db, `checklist/${id}`)); } catch(e) { console.error(e); }
     setSyncing(false);
   }
 
@@ -815,13 +822,14 @@ export default function JapanTrip() {
   }
 
   async function saveRecs(items) {
+    if(!user || user.isAnonymous) return;
     setSyncing(true);
     const updates = {};
     items.forEach(item => {
       const id = `r${Date.now()}_${Math.random().toString(36).slice(2,6)}`;
       updates[id] = { id, ...item, done:false };
     });
-    await update(ref(db,"recs"), updates);
+    await update(ref(db, "recs"), updates);
     setSyncing(false);
   }
 
@@ -833,49 +841,54 @@ export default function JapanTrip() {
   }
 
   async function toggleRec(id) {
-    if(!id) return;
+    if(!id || !user || user.isAnonymous) return;
     const item = Object.values(recs).find(r=>r.id===id);
     if(!item) return;
-    await update(ref(db,`recs/${id}`), { done: !item.done });
+    await update(ref(db, `recs/${id}`), { done: !item.done });
   }
 
   async function deleteRec(id) {
-    if(!id) return;
-    await remove(ref(db,`recs/${id}`));
+    if(!id || !user || user.isAnonymous) return;
+    await remove(ref(db, `recs/${id}`));
   }
 
   async function togglePacking(id) {
-    if(!id) return;
+    if(!id || !user || user.isAnonymous) return;
     const item = Object.values(packing).find(p=>p.id===id);
     if(!item) return;
-    await update(ref(db,`packing/${id}`), { done: !item.done });
+    await update(ref(db, `packing/${id}`), { done: !item.done });
   }
 
   async function addPackingItem() {
+    if(!user || user.isAnonymous) return;
     const id = `p${Date.now()}`;
     const firstCat = packingCats[0] || "כללי";
     const newItem = { id, cat: firstCat, text: "פריט חדש", done: false };
-    await set(ref(db,`packing/${id}`), newItem);
+    await set(ref(db, `packing/${id}`), newItem);
     setEditPackingItem(newItem);
   }
 
   async function updatePackingItem(item) {
-    await update(ref(db,`packing/${item.id}`), { text: item.text, cat: item.cat });
+    if(!user || user.isAnonymous) return;
+    await update(ref(db, `packing/${item.id}`), { text: item.text, cat: item.cat });
   }
 
   async function deletePackingItem(id) {
-    try { await remove(ref(db,`packing/${id}`)); } catch(e) { console.error(e); }
+    if(!user || user.isAnonymous) return;
+    try { await remove(ref(db, `packing/${id}`)); } catch(e) { console.error(e); }
   }
 
   async function addPackingCat(name) {
+    if(!user || user.isAnonymous) return;
     const updated = [...packingCats, name];
-    await set(ref(db,"packingCats"), updated);
+    await set(ref(db, "packingCats"), updated);
   }
 
   async function renamePackingCat(idx, newName) {
+    if(!user || user.isAnonymous) return;
     const oldName = packingCats[idx];
     const updated = packingCats.map((c,i)=>i===idx?newName:c);
-    await set(ref(db,"packingCats"), updated);
+    await set(ref(db, "packingCats"), updated);
     // update all items that used the old category name
     const updates = {};
     Object.values(packing).forEach(item=>{ if(item.cat===oldName) updates[`packing/${item.id}/cat`]=newName; });
@@ -883,8 +896,9 @@ export default function JapanTrip() {
   }
 
   async function deletePackingCat(idx) {
+    if(!user || user.isAnonymous) return;
     const updated = packingCats.filter((_,i)=>i!==idx);
-    await set(ref(db,"packingCats"), updated);
+    await set(ref(db, "packingCats"), updated);
   }
 
   const done = checklist.filter(i=>i.done).length;
@@ -956,10 +970,10 @@ export default function JapanTrip() {
           <button onClick={toggleDarkMode} style={{ width:32,height:32,borderRadius:8,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text-sub)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0 }}>
             {darkMode?"☀":"☾"}
           </button>
-          <button onClick={()=>{ if(user) setEditMode(!editMode); else setShowLogin(true); }} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
+          <button onClick={()=>{ if(user && !user.isAnonymous) setEditMode(!editMode); else setShowLogin(true); }} style={{ padding:"5px 12px",border:`1px solid ${editMode?"#C1121F":"var(--border)"}`,background:editMode?"#fff0f0":"transparent",color:editMode?"#C1121F":"var(--text-mute)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:"inherit",fontWeight:500,transition:"all .2s" }}>
             {editMode?"סיום ✓":"✏️"}
           </button>
-          {user && editMode && <button onClick={()=>signOut(auth)} style={{ padding:"5px 10px",border:"1px solid var(--border)",background:"transparent",color:"var(--text-mute)",borderRadius:8,fontSize:11,cursor:"pointer",fontFamily:"inherit" }}>יציאה</button>}
+          {user && !user.isAnonymous && editMode && <button onClick={()=>signOut(auth)} style={{ padding:"5px 10px",border:"1px solid var(--border)",background:"transparent",color:"var(--text-mute)",borderRadius:8,fontSize:11,cursor:"pointer",fontFamily:"inherit" }}>יציאה</button>}
           {syncing&&<span style={{ fontSize:11,color:"#C1121F",animation:"pulse 1s infinite" }}>שומר…</span>}
         </div>
       </header>
