@@ -950,7 +950,7 @@ export default function JapanTrip() {
       `}</style>
 
       {/* ── HEADER ── */}
-      <header style={{ position:"sticky",top:0,zIndex:100,background:"var(--header-bg)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid var(--border)",padding:"0 20px",display:"flex",alignItems:"center",height:52,gap:8 }}>
+      <header style={{ position:"sticky",top:0,zIndex:100,background:"var(--header-bg)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"1px solid var(--border)",padding:"env(safe-area-inset-top) 20px 0",display:"flex",alignItems:"center",minHeight:52,gap:8 }}>
         <div style={{ display:"flex",alignItems:"center",gap:8,marginLeft:"auto" }}>
           <span style={{ fontSize:18 }}>🎌</span>
           <span style={{ fontWeight:700,fontSize:15,color:"var(--text)",letterSpacing:"-.3px" }}>יפן 2026</span>
