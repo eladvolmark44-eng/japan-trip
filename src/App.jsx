@@ -124,6 +124,16 @@ const DEFAULT_PACKING = [
   { id:"p22", cat:"🎒 שונות", text:"מדבקות שם על המזוודות", done:false },
 ];
 
+const DEFAULT_RECS = [
+  { cat:"מסעדות", title:"Coco Nemaru Ginza", desc:"סטייק וואגיו", loc:"גינזה, טוקיו" },
+  { cat:"מסעדות", title:"Sushi Kenshin", desc:"סושי אומקסה", loc:"" },
+  { cat:"מסעדות", title:"WAGYU BURGER HIROKIYA", desc:"המבורגר וואגיו", loc:"" },
+  { cat:"מסעדות", title:"Aramaki", desc:"יקיטורי מומלץ מישלן", loc:"" },
+  { cat:"מסעדות", title:"Rare Tendon Ginza Mitsuyoshi", desc:"וואגיו/דגים בטמפורה", loc:"גינזה, טוקיו" },
+  { cat:"מסעדות", title:"Yoroniku", desc:"אומקסה של וואגיו", loc:"" },
+  { cat:"מסעדות", title:"Afuri", desc:"רשת ראמנים מעולה", loc:"" },
+];
+
 const ATTRACTIONS = [
   { name:"DisneySea", loc:"טוקיו", emoji:"🎡", day:"09.09", tags:["ילדים","חובה"], color:"#C1121F",
     mapsUrl:"https://www.google.com/maps/search/Tokyo+DisneySea/@35.6267,139.8851,16z",
@@ -746,6 +756,21 @@ export default function JapanTrip() {
         set(ref(db, "packing"), Object.fromEntries(DEFAULT_PACKING.map(i=>[i.id,i])));
         set(ref(db, "packingCats"), DEFAULT_PACKING_CATS);
         set(ref(db, "initialized"), true);
+      }
+    },{ onlyOnce:true });
+  },[user]);
+
+  useEffect(()=>{
+    if(!user || user.isAnonymous) return;
+    onValue(ref(db, "recsSeededV1"), s=>{
+      if(!s.exists()){
+        const updates = {};
+        DEFAULT_RECS.forEach((item, idx)=>{
+          const id = `r${Date.now()+idx}_${Math.random().toString(36).slice(2,6)}`;
+          updates[id] = { id, ...item, done:false };
+        });
+        update(ref(db, "recs"), updates);
+        set(ref(db, "recsSeededV1"), true);
       }
     },{ onlyOnce:true });
   },[user]);
