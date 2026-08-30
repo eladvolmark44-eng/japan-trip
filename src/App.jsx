@@ -134,10 +134,14 @@ a { color: var(--gold); }
   -webkit-backdrop-filter: blur(12px);
 }
 .hdr-title {
-  font-size: 18px; font-weight: 800; letter-spacing: -0.3px;
+  font-size: 17px; font-weight: 900; letter-spacing: -0.5px;
   color: var(--text);
   display: flex; align-items: center; gap: 6px;
+  line-height: 1.1;
 }
+.hdr-title .jp-main { font-size: 20px; font-weight: 900; color: var(--gold); }
+.hdr-title .jp-sub  { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: var(--text3); text-transform: uppercase; margin-top: 2px; }
+.hdr-title-wrap { display: flex; flex-direction: column; }
 .hdr-title span { color: var(--gold); }
 .hdr-actions { display: flex; align-items: center; gap: 4px; }
 .btn-icon {
@@ -998,6 +1002,9 @@ function DayDetail({ day, user, onBack }) {
   };
 
   const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${day.map.w}%2C${day.map.s}%2C${day.map.e}%2C${day.map.n}&layer=mapnik`;
+  const centerLat = ((day.map.s + day.map.n) / 2).toFixed(5);
+  const centerLon = ((day.map.w + day.map.e) / 2).toFixed(5);
+  const googleMapsUrl = `https://www.google.com/maps/@${centerLat},${centerLon},14z`;
 
   return (
     <div className="day-detail">
@@ -1010,7 +1017,7 @@ function DayDetail({ day, user, onBack }) {
         <div className="dd-hotel">🏨 {day.hotel}</div>
       </div>
 
-      <div className="dd-map">
+      <div className="dd-map" style={{position:'relative'}}>
         <iframe
           src={mapUrl}
           title={`מפה — ${day.title}`}
@@ -1018,6 +1025,20 @@ function DayDetail({ day, user, onBack }) {
           scrolling="no"
           referrerPolicy="no-referrer"
         />
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position:'absolute', bottom:10, left:10,
+            background:'rgba(255,255,255,0.92)', color:'#1a73e8',
+            padding:'5px 12px', borderRadius:20, fontSize:12,
+            fontWeight:700, textDecoration:'none', boxShadow:'0 1px 6px rgba(0,0,0,0.25)',
+            display:'flex', alignItems:'center', gap:5,
+          }}
+        >
+          🗺️ פתח בגוגל מפות
+        </a>
       </div>
 
       <div className="timeline">
@@ -1296,7 +1317,13 @@ export default function App() {
   return (
     <>
       <header className="hdr">
-        <div className="hdr-title">🗾 <span>יפן</span> 2026</div>
+        <div className="hdr-title">
+          <span style={{fontSize:26}}>🇯🇵</span>
+          <div className="hdr-title-wrap">
+            <div className="jp-main">יפן ספטמבר 2026</div>
+            <div className="jp-sub">Volmark Family Trip · Japan</div>
+          </div>
+        </div>
         <div className="hdr-actions">
           {authReady && (
             user && !user.isAnonymous
