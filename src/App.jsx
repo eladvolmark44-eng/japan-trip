@@ -1001,10 +1001,21 @@ function DayDetail({ day, user, onBack }) {
     }
   };
 
-  const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${day.map.w}%2C${day.map.s}%2C${day.map.e}%2C${day.map.n}&layer=mapnik`;
   const centerLat = ((day.map.s + day.map.n) / 2).toFixed(5);
   const centerLon = ((day.map.w + day.map.e) / 2).toFixed(5);
   const googleMapsUrl = `https://www.google.com/maps/@${centerLat},${centerLon},14z`;
+  const mapSrcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>html,body,#map{margin:0;padding:0;height:100%;width:100%;}</style>
+</head><body><div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var map=L.map('map',{zoomControl:false,scrollWheelZoom:false,dragging:false,keyboard:false,tap:false})
+  .setView([${centerLat},${centerLon}],13);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:18,attribution:''}).addTo(map);
+L.circleMarker([${centerLat},${centerLon}],{radius:7,color:'#D4AF37',fillColor:'#D4AF37',fillOpacity:1,weight:2}).addTo(map);
+</script></body></html>`;
 
   return (
     <div className="day-detail">
@@ -1019,11 +1030,9 @@ function DayDetail({ day, user, onBack }) {
 
       <div className="dd-map" style={{position:'relative'}}>
         <iframe
-          src={mapUrl}
+          srcdoc={mapSrcdoc}
           title={`מפה — ${day.title}`}
-          loading="lazy"
           scrolling="no"
-          referrerPolicy="no-referrer"
         />
         <a
           href={googleMapsUrl}
