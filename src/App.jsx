@@ -1013,11 +1013,11 @@ function DayDetail({ day, user, onBack }) {
 </head><body><div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-var map=L.map('map',{zoomControl:false,scrollWheelZoom:false,dragging:false,keyboard:false,tap:false})
+var map=L.map('map',{zoomControl:false,scrollWheelZoom:false,dragging:false,keyboard:false,tap:false,attributionControl:false})
   .setView([${centerLat},${centerLon}],13);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-  {maxZoom:18,attribution:''}).addTo(map);
-L.circleMarker([${centerLat},${centerLon}],{radius:7,color:'#D4AF37',fillColor:'#D4AF37',fillOpacity:1,weight:2}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  {subdomains:'abcd',maxZoom:20}).addTo(map);
+L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'#D4AF37',fillOpacity:1,weight:2}).addTo(map);
 </script></body></html>`;
 
   return (
@@ -1029,28 +1029,6 @@ L.circleMarker([${centerLat},${centerLon}],{radius:7,color:'#D4AF37',fillColor:'
         <div className="dd-date-row">{day.dow} · {day.date}</div>
         <div className="dd-title">{day.emoji} {day.title}</div>
         <div className="dd-hotel">🏨 {day.hotel}</div>
-      </div>
-
-      <div className="dd-map" style={{position:'relative'}}>
-        <iframe
-          srcdoc={mapSrcdoc}
-          title={`מפה — ${day.title}`}
-          scrolling="no"
-        />
-        <a
-          href={googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            position:'absolute', bottom:10, left:10,
-            background:'rgba(255,255,255,0.92)', color:'#1a73e8',
-            padding:'5px 12px', borderRadius:20, fontSize:12,
-            fontWeight:700, textDecoration:'none', boxShadow:'0 1px 6px rgba(0,0,0,0.25)',
-            display:'flex', alignItems:'center', gap:5,
-          }}
-        >
-          🗺️ פתח בגוגל מפות
-        </a>
       </div>
 
       <div className="timeline">
@@ -1067,6 +1045,33 @@ L.circleMarker([${centerLat},${centerLon}],{radius:7,color:'#D4AF37',fillColor:'
             <div className="tl-chevron">‹</div>
           </div>
         ))}
+      </div>
+
+      <div className="dd-map" style={{position:'relative', cursor:'pointer'}}>
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position:'absolute', inset:0, zIndex:10,
+            display:'flex', alignItems:'flex-end', justifyContent:'flex-start',
+            padding:10, textDecoration:'none',
+          }}
+          aria-label="פתח בגוגל מפות"
+        >
+          <span style={{
+            background:'rgba(255,255,255,0.92)', color:'#1a73e8',
+            padding:'5px 12px', borderRadius:20, fontSize:12,
+            fontWeight:700, boxShadow:'0 1px 6px rgba(0,0,0,0.25)',
+            display:'flex', alignItems:'center', gap:5,
+          }}>🗺️ פתח בגוגל מפות</span>
+        </a>
+        <iframe
+          srcdoc={mapSrcdoc}
+          title={`מפה — ${day.title}`}
+          scrolling="no"
+          style={{pointerEvents:'none', display:'block'}}
+        />
       </div>
 
       <div className="notes-section">
