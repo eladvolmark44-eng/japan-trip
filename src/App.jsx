@@ -236,11 +236,16 @@ a { color: var(--gold); }
   border-bottom: 1px solid var(--border);
 }
 .dd-back {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600; color: var(--gold);
-  margin-bottom: 12px; padding: 2px 0;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 700; color: var(--gold);
+  margin-bottom: 12px;
+  padding: 10px 18px;
+  background: var(--gold-faint);
+  border: 1.5px solid rgba(212,175,55,0.35);
+  border-radius: 50px;
+  min-height: 44px;
 }
-.dd-back:hover { opacity: 0.8; }
+.dd-back:hover, .dd-back:active { opacity: 0.75; }
 .dd-date-row { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
 .dd-title { font-size: 22px; font-weight: 800; color: var(--text); margin-top: 4px; text-wrap: balance; }
 .dd-hotel { font-size: 12px; color: var(--text3); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
