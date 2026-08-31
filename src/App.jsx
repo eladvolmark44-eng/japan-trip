@@ -231,25 +231,26 @@ a { color: var(--gold); }
 /* ── Day detail ── */
 .day-detail { padding: 0 0 16px; }
 .dd-header {
-  padding: 64px 16px 12px;
+  padding: 16px 16px 12px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
 }
+.dd-back-bar {
+  position: sticky;
+  top: calc(var(--hh) + env(safe-area-inset-top));
+  z-index: 150;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+}
 .dd-back {
-  position: fixed;
-  top: calc(var(--hh) + 10px);
-  right: 16px;
-  z-index: 300;
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 15px; font-weight: 700; color: var(--gold);
   padding: 10px 18px;
-  background: var(--bg-card);
-  border: 1.5px solid rgba(212,175,55,0.45);
+  background: var(--gold-faint);
+  border: 1.5px solid rgba(212,175,55,0.4);
   border-radius: 50px;
   min-height: 44px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 .dd-back:hover, .dd-back:active { opacity: 0.75; }
 .dd-date-row { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
@@ -1043,10 +1044,12 @@ L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'
 
   return (
     <div className="day-detail">
-      <div className="dd-header">
+      <div className="dd-back-bar">
         <button className="dd-back" onClick={onBack}>
           <span>→</span> חזרה לרשימה
         </button>
+      </div>
+      <div className="dd-header">
         <div className="dd-date-row">{day.dow} · {day.date}</div>
         <div className="dd-title">{day.emoji} {day.title}</div>
         <div className="dd-hotel">🏨 {day.hotel}</div>
