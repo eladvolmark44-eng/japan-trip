@@ -1006,7 +1006,7 @@ function DayDetail({ day, user, onBack }) {
 
   const centerLat = ((day.map.s + day.map.n) / 2).toFixed(5);
   const centerLon = ((day.map.w + day.map.e) / 2).toFixed(5);
-  const googleMapsUrl = `https://www.google.com/maps/@${centerLat},${centerLon},14z`;
+  const googleMapsUrl = `https://maps.apple.com/?ll=${centerLat},${centerLon}&z=14`;
   const mapSrcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>html,body,#map{margin:0;padding:0;height:100%;width:100%;}</style>
@@ -1057,14 +1057,14 @@ L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'
             display:'flex', alignItems:'flex-end', justifyContent:'flex-start',
             padding:10, textDecoration:'none',
           }}
-          aria-label="פתח בגוגל מפות"
+          aria-label="פתח במפות"
         >
           <span style={{
             background:'rgba(255,255,255,0.92)', color:'#1a73e8',
             padding:'5px 12px', borderRadius:20, fontSize:12,
             fontWeight:700, boxShadow:'0 1px 6px rgba(0,0,0,0.25)',
             display:'flex', alignItems:'center', gap:5,
-          }}>🗺️ פתח בגוגל מפות</span>
+          }}>🗺️ פתח במפות</span>
         </a>
         <iframe
           srcdoc={mapSrcdoc}
