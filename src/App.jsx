@@ -1006,7 +1006,17 @@ function DayDetail({ day, user, onBack }) {
 
   const centerLat = ((day.map.s + day.map.n) / 2).toFixed(5);
   const centerLon = ((day.map.w + day.map.e) / 2).toFixed(5);
-  const googleMapsUrl = `https://maps.apple.com/?ll=${centerLat},${centerLon}&z=14`;
+  const webMapsUrl = `https://www.google.com/maps/@${centerLat},${centerLon},14z`;
+  const handleMapClick = (e) => {
+    e.preventDefault();
+    // Try to open Google Maps app directly via URL scheme
+    const appUrl = `comgooglemaps://?center=${centerLat},${centerLon}&zoom=14`;
+    window.location.href = appUrl;
+    // If app is not installed, focus stays on the page → fall back to web after delay
+    setTimeout(() => {
+      if (document.hasFocus()) window.open(webMapsUrl, '_blank');
+    }, 1500);
+  };
   const mapSrcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>html,body,#map{margin:0;padding:0;height:100%;width:100%;}</style>
@@ -1049,7 +1059,8 @@ L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'
 
       <div className="dd-map" style={{position:'relative', cursor:'pointer'}}>
         <a
-          href={googleMapsUrl}
+          href={webMapsUrl}
+          onClick={handleMapClick}
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -1057,14 +1068,14 @@ L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'
             display:'flex', alignItems:'flex-end', justifyContent:'flex-start',
             padding:10, textDecoration:'none',
           }}
-          aria-label="פתח במפות"
+          aria-label="פתח בגוגל מפות"
         >
           <span style={{
             background:'rgba(255,255,255,0.92)', color:'#1a73e8',
             padding:'5px 12px', borderRadius:20, fontSize:12,
             fontWeight:700, boxShadow:'0 1px 6px rgba(0,0,0,0.25)',
             display:'flex', alignItems:'center', gap:5,
-          }}>🗺️ פתח במפות</span>
+          }}>🗺️ פתח בגוגל מפות</span>
         </a>
         <iframe
           srcdoc={mapSrcdoc}
