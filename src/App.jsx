@@ -1052,7 +1052,7 @@ L.circleMarker([${centerLat},${centerLon}],{radius:8,color:'#D4AF37',fillColor:'
           <span>→</span> חזרה לרשימה
         </button>
       </div>
-      <div className="dd-header">
+      <div className="dd-header" onClick={onBack} style={{cursor:'pointer'}}>
         <div className="dd-date-row">{day.dow} · {day.date}</div>
         <div className="dd-title">{day.emoji} {day.title}</div>
         <div className="dd-hotel">🏨 {day.hotel}</div>
