@@ -913,12 +913,15 @@ const BOOKINGS = [
   { status:'✅', name:'שינקנסן קנאזאווה→קיוטו', date:'17.09', note:'Receipt: AED3779L — ¥30,080', badge:'badge-done' },
   { status:'✅', name:'5 מלונות', date:'כל הטיול', note:'karaksa Yaesu / INOVA Kanazawa / Oriental Kyoto / karaksa Namba / karaksa Tokyo Station', badge:'badge-done' },
   { status:'✅', name:'CAPPINESS Oshiage – בית קפה קאפיבארה', date:'09.09', note:'¥4,000 לאדם, 40 דק׳, 200 מ׳ מ-Tokyo Sky Tree Station. נרכש!', badge:'badge-done' },
+  { status:'✅', name:'טיול מאורגן פוג׳י + האקונה', date:'13.09', note:'GetYourGuide: Mt Fuji & Hakone Ropeway, Lake Ashi Cruise, Owakudani. איסוף 07:20 ליד Shin-Marunouchi Building. Booking: O0AX9C9I9GYG7J5P18WHWRNVAW39CD8J', badge:'badge-done' },
   { status:'⏳', name:'Keisei Skyliner נריטה→אוּאֶנו', date:'08.09', note:'~¥9,890 למשפחה — לרכוש מראש ב-Klook/KKday', badge:'badge-open' },
   { status:'⏳', name:'שייט Hozugawa', date:'18.09', note:'~¥16,300 — Klook/KKday או hozugawaboatride.com', badge:'badge-open' },
   { status:'🔴', name:'מקדש הנינג׳ה Myoryuji', date:'16.09', note:'⚠️ דחוף! הזמנה חובה — לפחות יום מראש דרך האתר הרשמי', badge:'badge-skip' },
   { status:'⏳', name:'שינקנסן אוסקה→טוקיו', date:'25.09', note:'לקנות ~26.08.2026 (30 יום מראש) — 5 מקומות ביחד', badge:'badge-open' },
-  { status:'⏳', name:'Mipig Cafe הראג׳וקו', date:'11.09', note:'הזמנה מראש חובה — עד 04.09', badge:'badge-open' },
+  { status:'🔴', name:'Mipig Cafe הראג׳וקו', date:'11.09', note:'⚠️ דחוף! הזמנה מראש חובה — עד 04.09', badge:'badge-skip' },
+  { status:'⏳', name:'מוזיאון הקקי Unko Museum', date:'26.09', note:'אודייבה — לא דחוף, כמה ימים מראש מספיק', badge:'badge-open' },
   { status:'❌', name:'מוזיאון נינטנדו', date:'—', note:'אזל — ויתרנו', badge:'badge-skip' },
+  { status:'❌', name:'GetYourGuide Hakone+Fuji (t1038287)', date:'13.09', note:'בוטל — הוחלף בטיול חדש שנרכש', badge:'badge-skip' },
   { status:'🔴', name:'Kangetsu Daikakuji', date:'18.09', note:'לוודא תאריך מדויק קרוב לטיול', badge:'badge-skip' },
 ];
 
